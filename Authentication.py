@@ -32,7 +32,7 @@ print(generateTokenUrl)
 # This will open the link in a new browser window.
 #webbrowser.open(generateTokenUrl, new=1)
 
-# Continue to log in and click on COPY button on webpage to copy Auth Code Generated.
+# Continue to log in and click on COPY button on webpage to copy Auth Code Generated..
 
 auth_code = input("Enter Auth Code: ")
 session.set_token(auth_code)

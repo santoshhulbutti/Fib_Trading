@@ -16,6 +16,7 @@ def get_access_token():
         secret_key=SECRET_KEY,
         redirect_uri=REDIRECT_URI,
         response_type="code",
+        grant_type="authorization_code"
     )
 
     # Step 1: Generate login URL

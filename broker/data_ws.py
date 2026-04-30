@@ -1,5 +1,5 @@
 # ==========================================
-# WEBSOCKET DATA FEED
+# WEBSOCKET DATA FEED (FINAL CORRECT VERSION)
 # ==========================================
 
 from fyers_apiv3.FyersWebsocket import data_ws
@@ -8,23 +8,44 @@ from utils.logger import log
 
 def start_ws(access_token, symbols, on_message):
 
-    def on_open():
+    # --------------------------------------
+    # CALLBACKS
+    # --------------------------------------
+    def on_connect():
         log("WebSocket Connected")
-        ws.subscribe(symbols=symbols, data_type="symbolData")
 
-    def on_error(msg):
-        log(f"WS ERROR: {msg}")
+        # Subscribe to symbols
+        fyers.subscribe(
+            symbols=symbols,
+            data_type="symbolData"
+        )
 
-    def on_close(msg):
-        log("WebSocket Closed")
+    def on_close(message):
+        log(f"WebSocket Closed: {message}")
 
-    ws = data_ws.FyersDataSocket(
+    def on_error(message):
+        log(f"WebSocket Error: {message}")
+
+    def onmessage(msg):
+        on_message(msg)
+
+    # --------------------------------------
+    # SOCKET INIT (IMPORTANT)
+    # --------------------------------------
+    fyers = data_ws.FyersDataSocket(
         access_token=access_token,
-        on_open=on_open,
-        on_message=on_message,
-        on_error=on_error,
+        log_path="",
+        litemode=False,
+        write_to_file=False,
+        reconnect=True,
+        on_connect=on_connect,   # ✅ correct
         on_close=on_close,
-        reconnect=True
+        on_error=on_error,
+        on_message=onmessage,
+        reconnect_retry=10
     )
 
-    ws.connect()
+    # --------------------------------------
+    # CONNECT
+    # --------------------------------------
+    fyers.connect()

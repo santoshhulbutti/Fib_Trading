@@ -9,8 +9,8 @@ from broker.data_ws import start_ws
 from broker.data_fetch import get_prev_day_ohlc_for_symbol
 
 from config.settings import CLIENT_ID
-from config.trading_params import FIB_RATIOS, SL_POINTS
-from config.symbols import get_atm_strike, build_option_symbol, get_option_symbols
+from config.trading_params import FIB_RATIOS
+from config.symbols import get_option_symbols
 
 from strategy.fib_strategy import generate_fib_levels
 

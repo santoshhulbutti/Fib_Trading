@@ -1,10 +1,19 @@
 # ==========================================
 # SYSTEM & BROKER SETTINGS
 # ==========================================
+import os
 
 # -------- FYERS API --------
-CLIENT_ID = "TIA57SU3G1-200"
-SECRET_KEY = "nNUf3zJTDFcquIJb"
+# def get_env(key):
+#     value = os.getenv(key)
+#     if not value:
+#         raise ValueError(f"Missing environment variable: {key}")
+#     else:
+#         print("\n🔐 KEY ",key," -", value)
+#     return value
+
+CLIENT_ID = os.getenv("FYERS_CLIENT_ID")
+SECRET_KEY = os.getenv("FYERS_SECRET_KEY")
 REDIRECT_URI = "https://www.google.com"
 
 # -------- TRADING --------

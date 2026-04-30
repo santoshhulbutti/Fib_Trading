@@ -163,7 +163,7 @@ def get_option_symbols(prev_close):
         "put": put_symbol
     }
 
-    print(result)
+    # print(result)
 
     return result
 

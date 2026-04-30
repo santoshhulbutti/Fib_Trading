@@ -16,6 +16,7 @@ from config.trading_params import SL_POINTS, TRAILING_RULES
 
 from broker.orders import (
     place_stop_buy,
+    # place_stop_sell,
     cancel_order,
     place_sl_order,
     modify_order,
@@ -100,7 +101,9 @@ class Engine:
                         cancel_order(self.fyers, state.pending_order_id)
 
                     res = place_stop_buy(self.fyers, self.symbol, 1, upper)
-                    state.pending_order_id = res.get("id")
+                    # state.pending_order_id = res.get("id")
+                    state.entry_order_id = res.get("id")
+                    state.entry_order_filled = False
 
                     log(f"{self.symbol} FIRST TRADE ORDER @ {upper}")
 
@@ -110,26 +113,115 @@ class Engine:
 
                 if cross == "CROSS_UP":
                     res = place_stop_buy(self.fyers, self.symbol, 1, upper)
-                    state.pending_order_id = res.get("id")
+                    # state.pending_order_id = res.get("id")
+                    state.entry_order_id = res.get("id")
+                    state.entry_order_filled = False
 
                     log(f"{self.symbol} BREAKOUT ORDER @ {upper}")
+
+                ####        TEST CODE BLOCK - start
+                # if cross == "CROSS_DOWN":
+                #     res = place_stop_sell(self.fyers, self.symbol, 1, lower)
+                #     state.pending_order_id = res.get("id")
+                #
+                #     log(f"{self.symbol} BREAKDOWN ORDER @ {upper}")
+                ####        TEST CODE BLOCK - end
 
         # ----------------------------------
         # ORDER EXECUTION (SIMPLIFIED)
         # ----------------------------------
         # NOTE: Replace with real order status check later
 
-        if state.pending_order_id and price >= upper:
+        # if state.pending_order_id and price >= upper:
+        #
+        #     log(f"{self.symbol} EXECUTED @ {upper}")
+        #
+        #     sl_price = calculate_sl(upper)
+        #
+        #     state.set_active_trade(upper, sl_price)
+        #     state.first_trade_done = True
+        #
+        #     sl_res = place_sl_order(self.fyers, self.symbol, 1, sl_price)
+        #     state.sl_order_id = sl_res.get("id")
 
-            log(f"{self.symbol} EXECUTED @ {upper}")
+        # ----------------------------------
+        # CHECK ENTRY ORDER EXECUTION
+        # ----------------------------------
+        if state.entry_order_id and not state.entry_order_filled:
 
-            sl_price = calculate_sl(upper)
+            from broker.orders import get_order_by_id
 
-            state.set_active_trade(upper, sl_price)
-            state.first_trade_done = True
+            order = get_order_by_id(self.fyers, state.entry_order_id)
 
-            sl_res = place_sl_order(self.fyers, self.symbol, 1, sl_price)
-            state.sl_order_id = sl_res.get("id")
+            if not order:
+                # Order not found yet (API delay / transient)
+                return
+
+            # if order:
+
+            status = order.get("status")
+            # avg_price = order.get("avgPrice")
+
+            # 2 = FILLED
+            if status == 2:
+
+                avg_price = order.get("avgPrice")
+                filled_qty = order.get("filledQty", 0)
+
+                # 🔴 Safety check (VERY IMPORTANT)
+                if avg_price is None or filled_qty == 0:
+                    log(f"{self.symbol} ERROR: Filled order but avgPrice/filledQty missing → {order}")
+                    return
+
+                fill_price = float(avg_price)
+                log(f"{self.symbol} ORDER FILLED @ {fill_price} | Qty: {filled_qty}")
+
+                # log(f"{self.symbol} ORDER FILLED @ {fill_price}")
+
+                # Activate trade
+                sl_price = calculate_sl(fill_price)
+
+                state.set_active_trade(fill_price, sl_price)
+                state.entry_order_filled = True
+                state.first_trade_done = True
+                state.entry_order_id = None  # clear pending order
+
+                # ----------------------------------
+                # PLACE SL ORDER AFTER CONFIRMATION
+                # ----------------------------------
+                sl_res = place_sl_order(self.fyers, self.symbol, filled_qty, sl_price)
+
+                state.sl_order_id = sl_res.get("id")
+
+                log(f"{self.symbol} SL PLACED @ {sl_price}")
+
+                # ----------------------------------
+                # CASE 2: ORDER REJECTED
+                # ----------------------------------
+            elif status == 5:  # REJECTED
+
+                log(f"{self.symbol} ORDER REJECTED → {order}")
+
+                state.entry_order_id = None
+                state.entry_order_filled = False
+
+                # ----------------------------------
+                # CASE 3: ORDER CANCELLED
+                # ----------------------------------
+            elif status == 6:  # CANCELLED
+
+                log(f"{self.symbol} ORDER CANCELLED")
+
+                state.entry_order_id = None
+                state.entry_order_filled = False
+
+                # ----------------------------------
+                # CASE 4: STILL PENDING
+                # ----------------------------------
+            else:
+                # status = 1 (PLACED) or others
+                # Do nothing → keep waiting
+                pass
 
         # ----------------------------------
         # UPDATE PREVIOUS PRICE

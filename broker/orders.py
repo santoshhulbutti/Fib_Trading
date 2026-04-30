@@ -25,6 +25,23 @@ def place_stop_buy(fyers, symbol, qty, trigger_price):
     log(f"STOP BUY ORDER: {res}")
     return res
 
+####        TEST CODE BLOCK - start
+# def place_stop_sell(fyers, symbol, qty, trigger_price):
+#     data = {
+#         "symbol": symbol,
+#         "qty": qty,
+#         "type": 3,  # STOP LIMIT
+#         "side": -1,  # sell
+#         "productType": "INTRADAY",
+#         "limitPrice": trigger_price,
+#         "stopPrice": trigger_price,
+#         "validity": "DAY"
+#     }
+#
+#     res = fyers.place_order(data)
+#     log(f"STOP SELL ORDER: {res}")
+#     return res
+####        TEST CODE BLOCK - end
 
 # ------------------------------------------
 # PLACE STOP LOSS ORDER
@@ -45,6 +62,24 @@ def place_sl_order(fyers, symbol, qty, sl_price):
     log(f"SL ORDER: {res}")
     return res
 
+
+####        TEST CODE BLOCK - start
+def place_sell_sl_order(fyers, symbol, qty, sl_price):
+    data = {
+        "symbol": symbol,
+        "qty": qty,
+        "type": 3,
+        "side": 1,  # buy
+        "productType": "INTRADAY",
+        "limitPrice": sl_price,
+        "stopPrice": sl_price,
+        "validity": "DAY"
+    }
+
+    res = fyers.place_order(data)
+    log(f"SL ORDER: {res}")
+    return res
+####        TEST CODE BLOCK - end
 
 # ------------------------------------------
 # MARKET ORDER (EXIT)
@@ -103,6 +138,36 @@ def get_order_status(fyers, order_id):
             return order["status"]
 
     return None
+
+
+# ------------------------------------------
+# GET ORDER BY ID
+# ------------------------------------------
+def get_order_by_id(fyers, order_id):
+
+    res = fyers.orderbook()
+
+    if "orderBook" not in res:
+        return None
+
+    for order in res["orderBook"]:
+        if order["id"] == order_id:
+            return order
+
+    return None
+
+
+# ------------------------------------------
+# CHECK IF ORDER FILLED
+# ------------------------------------------
+def is_order_filled(fyers, order_id):
+
+    order = get_order_by_id(fyers, order_id)
+
+    if not order:
+        return False
+
+    return order.get("status") == 2  # 2 = FILLED
 
 
 # ------------------------------------------

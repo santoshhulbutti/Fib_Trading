@@ -38,7 +38,7 @@ def start_ws(access_token, symbols, on_message):
         litemode=False,
         write_to_file=False,
         reconnect=True,
-        on_connect=on_connect,   # ✅ correct
+        on_connect=on_connect,
         on_close=on_close,
         on_error=on_error,
         on_message=onmessage,

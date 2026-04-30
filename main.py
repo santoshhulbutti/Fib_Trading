@@ -54,11 +54,17 @@ def initialize_system():
     log("AUTH SUCCESS")
     current_time = now.strftime("%H:%M:%S.%f")[:-3]  # trim to milliseconds
     print(f"AUTH SUCCESS... Current Time = {current_time}")
-
+    """
+    # --------------------------------------
+    # --------------------------------------
+    # unquote this 3 quotation comment block after testing
+    # --------------------------------------
+    # --------------------------------------
     # --------------------------------------
     # GET ATM OPTION SYMBOLS
     # --------------------------------------
     # First get index close (for ATM calculation)
+    
     index_ohlc = get_prev_day_ohlc_for_symbol(fyers, "BSE:SENSEX-INDEX")
     prev_close = index_ohlc["close"]
 
@@ -95,7 +101,18 @@ def initialize_system():
     put_engine = Engine(fyers, put_symbol, put_levels)
 
     return fyers, call_engine, put_engine, call_symbol, put_symbol
+"""
 
+    ####        TEST CODE BLOCK - start
+
+    # GET HDFC equity symbol
+    equity_sym_ohlc = get_prev_day_ohlc_for_symbol(fyers, "NSE:HDFCBANK-EQ")
+    eq_levels = generate_fib_levels(equity_sym_ohlc["high"], equity_sym_ohlc["low"])
+    eq_engine = Engine(fyers, "NSE:HDFCBANK-EQ", eq_levels)
+
+    return fyers, eq_engine, "NSE:HDFCBANK-EQ"
+
+    ####        TEST CODE BLOCK - end
 
 # ------------------------------------------
 # EOD CHECK
@@ -112,7 +129,12 @@ def is_eod():
 
 def run():
 
-    fyers, call_engine, put_engine, call_symbol, put_symbol = initialize_system()
+    # uncomment below line for option call & put engine
+    # fyers, call_engine, put_engine, call_symbol, put_symbol = initialize_system()
+
+    ####        TEST CODE BLOCK - start
+    fyers, eq_engine, eq_symbol= initialize_system()
+    ####        TEST CODE BLOCK - end
 
     log("STARTING WEBSOCKET...")
 
@@ -126,19 +148,25 @@ def run():
             price = msg.get("ltp")
 
             # ROUTE TO ENGINE
-            if symbol == call_symbol:
-                call_engine.on_tick(price)
+            # if symbol == call_symbol:
+            #     call_engine.on_tick(price)
+            #
+            # elif symbol == put_symbol:
+            #     put_engine.on_tick(price)
 
-            elif symbol == put_symbol:
-                put_engine.on_tick(price)
+            ####        TEST CODE BLOCK - start
+            eq_engine.on_tick(price)
+            ####        TEST CODE BLOCK - end
 
             # ----------------------------------
             # EOD EXIT
             # ----------------------------------
             if is_eod_exit_time():
                 log("EOD EXIT TRIGGERED")
-                call_engine.force_exit()
-                put_engine.force_exit()
+
+                # call_engine.force_exit()
+                # put_engine.force_exit()
+                eq_engine.force_exit()
 
         except Exception as e:
             error_log(f"MAIN ERROR: {e}")
@@ -146,7 +174,10 @@ def run():
     # START WS
     start_ws(
         access_token=fyers.token,
-        symbols=[call_symbol, put_symbol],
+        symbols=[
+                # call_symbol, put_symbol
+                eq_symbol
+                ],
         on_message=on_message
     )
 

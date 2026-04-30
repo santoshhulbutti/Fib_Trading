@@ -1,0 +1,23 @@
+in main.py
+    Initialize code block commented for initial test on Equity trade with 1 qty
+
+in orders.py
+    added stop sell order function block to short "place_stop_sell", (later commented this)
+    added SL order function block for short position "place_sell_sl_order"
+    added GET ORDER BY ID block
+    added CHECK IF ORDER FILLED
+
+
+in trading_params.py
+    SL points changed
+    trailing rules changed
+    MAX_TRADES_PER_DAY changed
+    MAX_DAILY_LOSS changed
+
+in engine.py
+    called place_stop_sell order to short during brakedown condition
+    to place SL order after buy order is filled the logic is updated in ENTRY LOGIC & CHECK ENTRY ORDER EXECUTION block
+
+
+in state.py
+    # Tracking order added

@@ -15,6 +15,11 @@ class TradeState:
         self.entry_price = None
         self.sl_price = None
 
+
+        # Tracking order
+        self.entry_order_id = None
+        self.entry_order_filled = False
+
         # Order state
         self.pending_order_id = None
         self.sl_order_id = None

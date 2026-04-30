@@ -39,7 +39,9 @@ response = session.generate_token()
 # Here is the access token which will be used further for creating Fyers instance of your account.
 try:
     access_token = response["access_token"]
+    refresh_token = response["refresh_token"]
     print("token: ",access_token)
+    print("refresh token: ", refresh_token)
 except Exception as e:
     print(e,response)
 
@@ -47,6 +49,8 @@ with open("fyers_client_id.txt", 'w') as file:
     file.write(client_id)
 with open("fyers_access_token.txt", 'w') as file:
     file.write(access_token)
+with open("fyers_refresh_token.txt", 'w') as file:
+    file.write(refresh_token)
 
 # Once you have generated accessToken now we can call multiple trading related or data related apis
 # after that in order to do so we need to first initialize the fyerModel object with all the requried params.

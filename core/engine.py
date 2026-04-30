@@ -11,7 +11,9 @@ from core.events import (
     calculate_trailing_sl
 )
 
+from strategy.fib_strategy import calculate_sl
 from config.trading_params import SL_POINTS, TRAILING_RULES
+
 from broker.orders import (
     place_stop_buy,
     cancel_order,
@@ -30,7 +32,6 @@ class Engine:
         self.fyers = fyers
         self.symbol = symbol
         self.levels = levels
-
         self.state = TradeState(symbol)
 
     # --------------------------------------
@@ -101,7 +102,7 @@ class Engine:
                     res = place_stop_buy(self.fyers, self.symbol, 1, upper)
                     state.pending_order_id = res.get("id")
 
-                    log(f"{self.symbol} NEW STOP BUY @ {upper}")
+                    log(f"{self.symbol} FIRST TRADE ORDER @ {upper}")
 
             # -------- SUBSEQUENT TRADES --------
             else:
@@ -111,7 +112,7 @@ class Engine:
                     res = place_stop_buy(self.fyers, self.symbol, 1, upper)
                     state.pending_order_id = res.get("id")
 
-                    log(f"{self.symbol} BREAKOUT BUY @ {upper}")
+                    log(f"{self.symbol} BREAKOUT ORDER @ {upper}")
 
         # ----------------------------------
         # ORDER EXECUTION (SIMPLIFIED)
@@ -122,7 +123,7 @@ class Engine:
 
             log(f"{self.symbol} EXECUTED @ {upper}")
 
-            sl_price = upper - SL_POINTS
+            sl_price = calculate_sl(upper)
 
             state.set_active_trade(upper, sl_price)
             state.first_trade_done = True
@@ -139,30 +140,25 @@ class Engine:
     # EXIT TRADE
     # --------------------------------------
     def exit_trade(self):
+
         try:
+            # Cancel SL first
+            if self.state.sl_order_id:
+                cancel_order(self.fyers, self.state.sl_order_id)
+
             positions = get_positions(self.fyers)
 
             for pos in positions:
                 if pos["symbol"] == self.symbol and pos["qty"] != 0:
-
                     qty = abs(pos["qty"])
+                    side = "SELL" if pos["qty"] > 0 else "BUY"
 
-                    # Determine exit side
-                    if pos["qty"] > 0:
-                        exit_side = "SELL"
-                    else:
-                        exit_side = "BUY"
+                    log(f"{self.symbol} EXIT | Qty: {qty} | Side: {side}")
 
-                    log(f"{self.symbol} EXITING POSITION | Qty: {qty} | Side: {exit_side}")
-
-                    # Place market exit
-                    res = place_market_order(self.fyers, self.symbol, qty, exit_side)
-
-                    log(f"{self.symbol} EXIT ORDER RESPONSE: {res}")
-
+                    place_market_order(self.fyers, self.symbol, qty, side)
                     return
 
-            log(f"{self.symbol} NO OPEN POSITION FOUND")
+            log(f"{self.symbol} NO POSITION FOUND")
 
         except Exception as e:
             error_log(f"{self.symbol} EXIT ERROR: {e}")
@@ -173,6 +169,6 @@ class Engine:
     def force_exit(self):
 
         if self.state.active_trade:
-            log(f"{self.symbol} EOD EXIT")
+            log(f"{self.symbol} EOD FORCE EXIT")
             self.exit_trade()
             self.state.reset_trade()

@@ -3,15 +3,20 @@
 # ==========================================
 
 from fyers_apiv3 import fyersModel
-from auth import get_access_token
+
+from broker.auth import get_access_token
 from broker.data_ws import start_ws
-from broker.data_fetch import get_prev_day_ohlc
+from broker.data_fetch import get_prev_day_ohlc_for_symbol
+
 from config.settings import CLIENT_ID
 from config.trading_params import FIB_RATIOS, SL_POINTS
+from config.symbols import get_atm_strike, build_option_symbol, get_option_symbols
 
-from instrument import get_atm_strike, build_option_symbol
+from strategy.fib_strategy import generate_fib_levels
+
 from core.engine import Engine
-from utils.logger import log
+from utils.logger import log, error_log
+from utils.time_utils import is_eod_exit_time
 
 import datetime
 
@@ -33,6 +38,9 @@ def calculate_fib_levels(high, low):
 def initialize_system():
 
     log("SYSTEM STARTING...")
+    now = datetime.datetime.now()
+    current_time = now.strftime("%H:%M:%S.%f")[:-3]   # trim to milliseconds
+    print(f"SYSTEM STARTING... Current Time = {current_time}")
 
     # AUTH
     access_token = get_access_token()
@@ -44,48 +52,47 @@ def initialize_system():
     )
 
     log("AUTH SUCCESS")
+    current_time = now.strftime("%H:%M:%S.%f")[:-3]  # trim to milliseconds
+    print(f"AUTH SUCCESS... Current Time = {current_time}")
 
     # --------------------------------------
-    # FETCH PREVIOUS DAY DATA
+    # GET ATM OPTION SYMBOLS
     # --------------------------------------
-    ohlc = get_prev_day_ohlc(fyers)
+    # First get index close (for ATM calculation)
+    index_ohlc = get_prev_day_ohlc_for_symbol(fyers, "BSE:SENSEX-INDEX")
+    prev_close = index_ohlc["close"]
 
-    prev_high = ohlc["high"]
-    prev_low = ohlc["low"]
-    prev_close = ohlc["close"]
+    symbols = get_option_symbols(prev_close)
 
-    log(f"PREV DAY DATA: {ohlc}")
-
-    # --------------------------------------
-    # ATM STRIKE
-    # --------------------------------------
-    atm_strike = get_atm_strike(prev_close)
-
-    log(f"ATM STRIKE: {atm_strike}")
-
-    # --------------------------------------
-    # SYMBOLS
-    # --------------------------------------
-    call_symbol = build_option_symbol(atm_strike, "CE")
-    put_symbol = build_option_symbol(atm_strike, "PE")
+    call_symbol = symbols["call"]
+    put_symbol = symbols["put"]
 
     log(f"CALL SYMBOL: {call_symbol}")
     log(f"PUT SYMBOL: {put_symbol}")
 
     # --------------------------------------
-    # LEVELS
+    # FETCH OPTION OHLC (CRITICAL FIX)
     # --------------------------------------
-    levels = calculate_fib_levels(prev_high, prev_low)
+    call_ohlc = get_prev_day_ohlc_for_symbol(fyers, call_symbol)
+    put_ohlc = get_prev_day_ohlc_for_symbol(fyers, put_symbol)
 
-    log(f"FIB LEVELS: {levels}")
+    log(f"CALL OHLC: {call_ohlc}")
+    log(f"PUT OHLC: {put_ohlc}")
 
     # --------------------------------------
-    # ENGINE INIT
+    # GENERATE FIB LEVELS (SEPARATE)
     # --------------------------------------
-    call_engine = Engine(fyers, call_symbol, levels)
-    put_engine = Engine(fyers, put_symbol, levels)
+    call_levels = generate_fib_levels(call_ohlc["high"], call_ohlc["low"])
+    put_levels = generate_fib_levels(put_ohlc["high"], put_ohlc["low"])
 
-    log("ENGINES INITIALIZED")
+    log(f"CALL LEVELS: {call_levels}")
+    log(f"PUT LEVELS: {put_levels}")
+
+    # --------------------------------------
+    # INIT ENGINES
+    # --------------------------------------
+    call_engine = Engine(fyers, call_symbol, call_levels)
+    put_engine = Engine(fyers, put_symbol, put_levels)
 
     return fyers, call_engine, put_engine, call_symbol, put_symbol
 
@@ -109,13 +116,10 @@ def run():
 
     log("STARTING WEBSOCKET...")
 
-    # --------------------------------------
-    # WEBSOCKET CALLBACK
-    # --------------------------------------
     def on_message(msg):
 
         try:
-            if 'ltp' not in msg:
+            if "ltp" not in msg:
                 return
 
             symbol = msg.get("symbol")
@@ -131,18 +135,15 @@ def run():
             # ----------------------------------
             # EOD EXIT
             # ----------------------------------
-            if is_eod():
+            if is_eod_exit_time():
                 log("EOD EXIT TRIGGERED")
-
                 call_engine.force_exit()
                 put_engine.force_exit()
 
         except Exception as e:
-            log(f"ERROR: {e}")
+            error_log(f"MAIN ERROR: {e}")
 
-    # --------------------------------------
-    # START LIVE DATA
-    # --------------------------------------
+    # START WS
     start_ws(
         access_token=fyers.token,
         symbols=[call_symbol, put_symbol],

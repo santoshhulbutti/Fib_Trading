@@ -15,7 +15,7 @@ in trading_params.py
     MAX_DAILY_LOSS changed
 
 in engine.py
-    called place_stop_sell order to short during brakedown condition
+    called place_stop_sell order to short during brakedown condition  (later commented this)
     to place SL order after buy order is filled the logic is updated in ENTRY LOGIC & CHECK ENTRY ORDER EXECUTION block
 
 

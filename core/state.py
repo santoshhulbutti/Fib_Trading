@@ -1,33 +1,38 @@
 # ==========================================
-# TRADE STATE MANAGEMENT
+# TRADE STATE MANAGEMENT (FINAL - EVENT DRIVEN)
 # ==========================================
 
 class TradeState:
     def __init__(self, symbol):
         self.symbol = symbol
 
-        # Market state
+        # --------------------------------------
+        # MARKET STATE
+        # --------------------------------------
         self.prev_price = None
         self.curr_index = None
 
-        # Trade state
+        # --------------------------------------
+        # TRADE STATE
+        # --------------------------------------
         self.active_trade = False
         self.entry_price = None
         self.sl_price = None
 
+        # --------------------------------------
+        # ORDER TRACKING
+        # --------------------------------------
+        self.entry_order_id = None   # Pending entry order
+        self.sl_order_id = None      # SL order after fill
 
-        # Tracking order
-        self.entry_order_id = None
-        self.entry_order_filled = False
-
-        # Order state
-        self.pending_order_id = None
-        self.sl_order_id = None
-
-        # Strategy flags
+        # --------------------------------------
+        # STRATEGY FLAGS
+        # --------------------------------------
         self.first_trade_done = False
 
-        # Risk tracking
+        # --------------------------------------
+        # RISK TRACKING
+        # --------------------------------------
         self.trades_today = 0
 
     # --------------------------------------
@@ -37,21 +42,25 @@ class TradeState:
         self.active_trade = False
         self.entry_price = None
         self.sl_price = None
-        self.pending_order_id = None
+
+        self.entry_order_id = None
         self.sl_order_id = None
 
     # --------------------------------------
-    # SET ACTIVE TRADE
+    # SET ACTIVE TRADE (AFTER FILL)
     # --------------------------------------
     def set_active_trade(self, entry_price, sl_price):
         self.active_trade = True
         self.entry_price = entry_price
         self.sl_price = sl_price
-        self.pending_order_id = None
+
+        # Clear entry order (now filled)
+        self.entry_order_id = None
+
         self.trades_today += 1
 
     # --------------------------------------
-    # UPDATE SL
+    # UPDATE SL (TRAILING)
     # --------------------------------------
     def update_sl(self, new_sl):
         if new_sl and new_sl > self.sl_price:

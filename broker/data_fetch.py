@@ -54,13 +54,33 @@ from utils.logger import log
 # FETCH OHLC FOR ANY SYMBOL (INDEX / OPTION)
 # ==========================================
 
-def get_prev_day_ohlc_for_symbol(fyers, symbol):
+# ------------------------------------------
+# GET LAST TRADING DAY
+# ------------------------------------------
+def get_last_trading_day(today):
+
+    from config.symbols import is_trading_day  # reuse existing logic
     import datetime
 
-    today = datetime.date.today()
+    date = today
 
-    from_date = (today - datetime.timedelta(days=7)).strftime("%Y-%m-%d")
-    to_date = today.strftime("%Y-%m-%d")
+    while not is_trading_day(date):
+        date -= datetime.timedelta(days=1)
+
+    return date
+
+
+def get_prev_day_ohlc_for_symbol(fyers, symbol):
+    from datetime import date, timedelta
+
+    today = date.today()
+    to_date = get_last_trading_day(today).strftime("%Y-%m-%d")
+
+    # Previous trading day (for safety buffer)
+    from_date = (to_date - timedelta(days=7)).strftime("%Y-%m-%d")
+
+    # from_date = (today - datetime.timedelta(days=7)).strftime("%Y-%m-%d")
+    # to_date = today.strftime("%Y-%m-%d")
 
     data = {
         "symbol": symbol,

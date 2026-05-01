@@ -3,6 +3,7 @@
 # ==========================================
 
 from fyers_apiv3 import fyersModel
+# import os
 from config.settings import CLIENT_ID, SECRET_KEY, REDIRECT_URI
 
 
@@ -34,4 +35,5 @@ def get_access_token():
         raise Exception(f"Auth Failed: {response}")
 
     print("✅ Auth Successful")
+    # os.environ["FYERS_ACCESS_TOKEN"] = response["access_token"]
     return response["access_token"]

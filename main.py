@@ -6,6 +6,7 @@ from fyers_apiv3 import fyersModel
 
 from broker.auth import get_access_token
 from broker.data_ws import start_ws
+from broker.order_ws import start_order_ws   # ✅ NEW
 from broker.data_fetch import get_prev_day_ohlc_for_symbol
 
 from config.settings import CLIENT_ID
@@ -19,28 +20,17 @@ from utils.logger import log, error_log
 from utils.time_utils import is_eod_exit_time
 
 import datetime
-
-# ------------------------------------------
-# FIB LEVEL CALCULATION
-# ------------------------------------------
-
-def calculate_fib_levels(high, low):
-    diff = high - low
-    levels = [round(high - diff * r, 2) for r in FIB_RATIOS]
-    levels.sort()
-    return levels
+import threading
 
 
 # ------------------------------------------
 # SYSTEM INIT
 # ------------------------------------------
-
 def initialize_system():
 
     log("SYSTEM STARTING...")
     now = datetime.datetime.now()
-    current_time = now.strftime("%H:%M:%S.%f")[:-3]   # trim to milliseconds
-    print(f"SYSTEM STARTING... Current Time = {current_time}")
+    print(f"SYSTEM STARTING... {now}")
 
     # AUTH
     access_token = get_access_token()
@@ -52,92 +42,64 @@ def initialize_system():
     )
 
     log("AUTH SUCCESS")
-    current_time = now.strftime("%H:%M:%S.%f")[:-3]  # trim to milliseconds
-    print(f"AUTH SUCCESS... Current Time = {current_time}")
-    """
-    # --------------------------------------
-    # --------------------------------------
-    # unquote this 3 quotation comment block after testing
-    # --------------------------------------
-    # --------------------------------------
-    # --------------------------------------
-    # GET ATM OPTION SYMBOLS
-    # --------------------------------------
-    # First get index close (for ATM calculation)
-    
-    index_ohlc = get_prev_day_ohlc_for_symbol(fyers, "BSE:SENSEX-INDEX")
-    prev_close = index_ohlc["close"]
 
-    symbols = get_option_symbols(prev_close)
+    # ======================================
+    # 🔴 SWITCH MODE HERE
+    # ======================================
 
-    call_symbol = symbols["call"]
-    put_symbol = symbols["put"]
+    TEST_MODE = True   # ✅ Change to False for options
 
-    log(f"CALL SYMBOL: {call_symbol}")
-    log(f"PUT SYMBOL: {put_symbol}")
+    # ======================================
+    # TEST MODE (EQUITY)
+    # ======================================
+    if TEST_MODE:
 
-    # --------------------------------------
-    # FETCH OPTION OHLC (CRITICAL FIX)
-    # --------------------------------------
-    call_ohlc = get_prev_day_ohlc_for_symbol(fyers, call_symbol)
-    put_ohlc = get_prev_day_ohlc_for_symbol(fyers, put_symbol)
+        eq_symbol = "NSE:HDFCBANK-EQ"
 
-    log(f"CALL OHLC: {call_ohlc}")
-    log(f"PUT OHLC: {put_ohlc}")
+        eq_ohlc = get_prev_day_ohlc_for_symbol(fyers, eq_symbol)
+        eq_levels = generate_fib_levels(eq_ohlc["high"], eq_ohlc["low"])
 
-    # --------------------------------------
-    # GENERATE FIB LEVELS (SEPARATE)
-    # --------------------------------------
-    call_levels = generate_fib_levels(call_ohlc["high"], call_ohlc["low"])
-    put_levels = generate_fib_levels(put_ohlc["high"], put_ohlc["low"])
+        eq_engine = Engine(fyers, eq_symbol, eq_levels)
 
-    log(f"CALL LEVELS: {call_levels}")
-    log(f"PUT LEVELS: {put_levels}")
+        return fyers, [eq_engine], [eq_symbol]
 
-    # --------------------------------------
-    # INIT ENGINES
-    # --------------------------------------
-    call_engine = Engine(fyers, call_symbol, call_levels)
-    put_engine = Engine(fyers, put_symbol, put_levels)
+    # ======================================
+    # LIVE MODE (OPTIONS)
+    # ======================================
+    else:
 
-    return fyers, call_engine, put_engine, call_symbol, put_symbol
-"""
+        index_ohlc = get_prev_day_ohlc_for_symbol(fyers, "BSE:SENSEX-INDEX")
+        prev_close = index_ohlc["close"]
 
-    ####        TEST CODE BLOCK - start
+        symbols = get_option_symbols(prev_close)
 
-    # GET HDFC equity symbol
-    equity_sym_ohlc = get_prev_day_ohlc_for_symbol(fyers, "NSE:HDFCBANK-EQ")
-    eq_levels = generate_fib_levels(equity_sym_ohlc["high"], equity_sym_ohlc["low"])
-    eq_engine = Engine(fyers, "NSE:HDFCBANK-EQ", eq_levels)
+        call_symbol = symbols["call"]
+        put_symbol = symbols["put"]
 
-    return fyers, eq_engine, "NSE:HDFCBANK-EQ"
+        call_ohlc = get_prev_day_ohlc_for_symbol(fyers, call_symbol)
+        put_ohlc = get_prev_day_ohlc_for_symbol(fyers, put_symbol)
 
-    ####        TEST CODE BLOCK - end
+        call_levels = generate_fib_levels(call_ohlc["high"], call_ohlc["low"])
+        put_levels = generate_fib_levels(put_ohlc["high"], put_ohlc["low"])
 
-# ------------------------------------------
-# EOD CHECK
-# ------------------------------------------
+        call_engine = Engine(fyers, call_symbol, call_levels)
+        put_engine = Engine(fyers, put_symbol, put_levels)
 
-def is_eod():
-    now = datetime.datetime.now()
-    return now.hour == 15 and now.minute >= 20
+        return fyers, [call_engine, put_engine], [call_symbol, put_symbol]
 
 
 # ------------------------------------------
 # MAIN EXECUTION
 # ------------------------------------------
-
 def run():
 
-    # uncomment below line for option call & put engine
-    # fyers, call_engine, put_engine, call_symbol, put_symbol = initialize_system()
+    fyers, engines, symbols = initialize_system()
 
-    ####        TEST CODE BLOCK - start
-    fyers, eq_engine, eq_symbol= initialize_system()
-    ####        TEST CODE BLOCK - end
+    log("STARTING WEBSOCKETS...")
 
-    log("STARTING WEBSOCKET...")
-
+    # --------------------------------------
+    # PRICE CALLBACK
+    # --------------------------------------
     def on_message(msg):
 
         try:
@@ -147,16 +109,12 @@ def run():
             symbol = msg.get("symbol")
             price = msg.get("ltp")
 
-            # ROUTE TO ENGINE
-            # if symbol == call_symbol:
-            #     call_engine.on_tick(price)
-            #
-            # elif symbol == put_symbol:
-            #     put_engine.on_tick(price)
+            print(f"LTP {symbol} → {price}")
 
-            ####        TEST CODE BLOCK - start
-            eq_engine.on_tick(price)
-            ####        TEST CODE BLOCK - end
+            # ROUTE TO ENGINE
+            for engine in engines:
+                if engine.symbol == symbol:
+                    engine.on_tick(price)
 
             # ----------------------------------
             # EOD EXIT
@@ -164,27 +122,55 @@ def run():
             if is_eod_exit_time():
                 log("EOD EXIT TRIGGERED")
 
-                # call_engine.force_exit()
-                # put_engine.force_exit()
-                eq_engine.force_exit()
+                for engine in engines:
+                    engine.force_exit()
 
         except Exception as e:
             error_log(f"MAIN ERROR: {e}")
 
-    # START WS
-    start_ws(
-        access_token=fyers.token,
-        symbols=[
-                # call_symbol, put_symbol
-                eq_symbol
-                ],
-        on_message=on_message
-    )
+    # --------------------------------------
+    # ORDER/TRADES CALLBACK
+    # --------------------------------------
+    def engine_router(event_type, msg):
+
+        symbol = msg.get("symbol")
+
+        for engine in engines:
+            if engine.symbol == symbol:
+
+                if event_type == "TRADE":
+                    engine.handle_trade_update(msg)
+
+                elif event_type == "ORDER":
+                    engine.handle_order_update(msg)
+
+    # --------------------------------------
+    # START DATA WS (THREAD)
+    # --------------------------------------
+    threading.Thread(
+        target=start_ws,
+        args=(fyers.token, symbols, on_message),
+        daemon=True
+    ).start()
+
+    # --------------------------------------
+    # START ORDER WS (THREAD)
+    # --------------------------------------
+    threading.Thread(
+        target=start_order_ws,
+        args=(fyers.token, engine_router),
+        daemon=True
+    ).start()
+
+    # --------------------------------------
+    # KEEP MAIN ALIVE
+    # --------------------------------------
+    while True:
+        pass
 
 
 # ------------------------------------------
 # ENTRY POINT
 # ------------------------------------------
-
 if __name__ == "__main__":
     run()

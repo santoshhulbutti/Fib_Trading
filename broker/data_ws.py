@@ -3,6 +3,7 @@
 # ==========================================
 
 from fyers_apiv3.FyersWebsocket import data_ws
+from fyers_apiv3.FyersWebsocket import order_ws
 from utils.logger import log
 
 
@@ -17,8 +18,9 @@ def start_ws(access_token, symbols, on_message):
         # Subscribe to symbols
         fyers.subscribe(
             symbols=symbols,
-            data_type="symbolData"
+            data_type="symbolUpdate"
         )
+        # fyers.keep_running()
 
     def on_close(message):
         log(f"WebSocket Closed: {message}")
@@ -42,7 +44,7 @@ def start_ws(access_token, symbols, on_message):
         on_close=on_close,
         on_error=on_error,
         on_message=onmessage,
-        reconnect_retry=10
+        reconnect_retry=20
     )
 
     # --------------------------------------

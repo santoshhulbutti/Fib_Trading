@@ -1,3 +1,18 @@
+Date 02-May-2025
+
+checklist
+    In engine.py, you are using:
+        calculate_trailing_sl(entry_price, price, TRAILING_RULES)
+    👉 Ensure that function handles sorted keys properly
+
+    In time_utils.py, You are using:
+        is_eod_exit_time()
+    👉 Ensure it correctly checks: time >= 15:20
+
+
+
+
+
 Date 01-May-2025
 FILES TO UPDATE FOR LIVE DEPLOYMENT (IMPORTANT)
 When you switch from TEST → LIVE (options), you must update these:

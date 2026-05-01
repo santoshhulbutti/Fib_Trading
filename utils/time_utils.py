@@ -55,7 +55,8 @@ def is_eod_exit_time():
     eod_h, eod_m = _parse_time(EOD_EXIT_TIME)
     eod = current.replace(hour=eod_h, minute=eod_m, second=0)
 
-    return current >= eod
+    # return current >= eod
+    return current.hour == 15 and current.minute >= 20
 
 
 # ------------------------------------------

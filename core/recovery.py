@@ -3,6 +3,7 @@
 # ==========================================
 
 from broker.orders import get_positions, get_orderbook, cancel_order, place_sl_order
+from strategy.fib_strategy import calculate_sl
 from utils.logger import log
 
 
@@ -36,10 +37,13 @@ def sync_engine(engine):
 
         log(f"{symbol} ✅ POSITION FOUND | Qty={qty} | Entry={entry_price}")
 
-        state.set_active_trade(entry_price, None, qty)
+        sl_price = calculate_sl(entry_price)
+
+        state.set_active_trade(entry_price, sl_price, qty)
 
     else:
         log(f"{symbol} ❌ NO ACTIVE POSITION")
+        state.reset_trade()
 
     # --------------------------------------
     # STEP 2: ORDER CLASSIFICATION
@@ -51,9 +55,7 @@ def sync_engine(engine):
         if o["symbol"] != symbol:
             continue
 
-        status = o.get("status")
-
-        if status != 1:  # only open orders
+        if o.get("status") != 1:
             continue
 
         if o["side"] == 1:
@@ -86,12 +88,25 @@ def sync_engine(engine):
     # --------------------------------------
     if state.active_trade:
 
+        expected_sl = state.sl_price
+
         if sl_orders:
 
             latest_sl = sl_orders[-1]
             state.sl_order_id = latest_sl["id"]
 
-            log(f"{symbol} 🛡️ SL ORDER RECOVERED")
+            broker_sl = float(latest_sl.get("stopPrice", 0))
+
+            log(f"{symbol} 🛡️ SL ORDER RECOVERED | Broker SL={broker_sl}")
+
+            # 🔥 VALIDATE SL
+            if abs(broker_sl - expected_sl) > 1:
+                log(f"{symbol} ⚠ SL MISMATCH → FIXING")
+
+                cancel_order(fyers, latest_sl["id"])
+
+                res = place_sl_order(fyers, symbol, state.qty, expected_sl)
+                state.sl_order_id = res.get("id")
 
             # cancel duplicates
             for o in sl_orders[:-1]:
@@ -101,13 +116,11 @@ def sync_engine(engine):
             # 🚨 CRITICAL: Missing SL → recreate
             log(f"{symbol} ⚠ NO SL FOUND → RECREATING")
 
-            sl_price = state.entry_price - 25  # or your SL logic
-
-            res = place_sl_order(fyers, symbol, state.qty, sl_price)
+            res = place_sl_order(fyers, symbol, state.qty, expected_sl)
 
             state.sl_order_id = res.get("id")
 
-            log(f"{symbol} 🛡️ NEW SL PLACED @ {sl_price}")
+            log(f"{symbol} 🛡️ NEW SL PLACED @ {expected_sl}")
 
     else:
         # no position → cancel all SL
@@ -130,5 +143,8 @@ def sync_engine(engine):
 
         if filled > 0 and status != 2:
             log(f"{symbol} ⚠ PARTIAL FILL DETECTED → {filled}")
+
+            # 🔥 SAFE ACTION: clear entry order id
+            state.entry_order_id = None
 
     log(f"{symbol} ✅ RECOVERY COMPLETE")

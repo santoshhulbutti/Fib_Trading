@@ -80,8 +80,9 @@ class Engine:
 
             if new_sl and new_sl > state.sl_price:
                 state.update_sl(new_sl)
-                modify_order(self.fyers, state.sl_order_id, new_sl, new_sl)
-                log(f"{self.symbol} TRAIL SL → {new_sl}")
+                if state.sl_order_id:
+                    modify_order(self.fyers, state.sl_order_id, new_sl, new_sl)
+                    log(f"{self.symbol} TRAIL SL → {new_sl}")
 
         # ----------------------------------
         # 🚨 ENTRY LOCK (RECOVERY SAFE)
@@ -134,6 +135,14 @@ class Engine:
 
             status = msg.get("status")
 
+            filled_qty = msg.get("filledQty", 0)
+            status = msg.get("status")
+
+            # Partial fill (status != 2)
+            if filled_qty > 0 and status != 2:
+                log(f"{self.symbol} PARTIAL FILL → {filled_qty}")
+                return
+
             # Only process FILLED trades
             if status != 2:
                 return
@@ -170,6 +179,48 @@ class Engine:
         log(f"{self.symbol} ORDER EVENT: {msg}")
 
     # --------------------------------------
+    # POSITION UPDATE (CRITICAL FOR SYNC)
+    # --------------------------------------
+    def handle_position_update(self, msg):
+
+        try:
+            if msg.get("symbol") != self.symbol:
+                return
+
+            qty = msg.get("qty", 0)
+
+            # ----------------------------------
+            # POSITION CLOSED
+            # ----------------------------------
+            if qty == 0:
+
+                if self.state.active_trade:
+                    log(f"{self.symbol} POSITION CLOSED (BROKER)")
+
+                    self.state.reset_trade()
+
+                return
+
+            # ----------------------------------
+            # POSITION EXISTS
+            # ----------------------------------
+            entry_price = float(msg.get("avgPrice", 0))
+
+            if entry_price == 0:
+                return
+
+            # If engine missed trade (reconnect case)
+            if not self.state.active_trade:
+                log(f"{self.symbol} POSITION RECOVERED FROM WS @ {entry_price}")
+
+                sl_price = calculate_sl(entry_price)
+
+                self.state.set_active_trade(entry_price, sl_price, abs(qty))
+
+        except Exception as e:
+            error_log(f"{self.symbol} POSITION UPDATE ERROR: {e}")
+
+    # --------------------------------------
     # EXIT TRADE
     # --------------------------------------
     def exit_trade(self):
@@ -180,6 +231,7 @@ class Engine:
                 cancel_order(self.fyers, self.state.sl_order_id)
 
             # Clean exit via orders layer
+            log(f"{self.symbol} EXIT INITIATED")
             close_position(self.fyers, self.symbol)
 
             # positions = get_positions(self.fyers)

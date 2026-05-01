@@ -6,7 +6,7 @@ from fyers_apiv3 import fyersModel
 
 from broker.auth import get_access_token
 from broker.data_ws import start_ws
-from broker.order_ws import start_order_ws   # ✅ NEW
+from broker.order_ws import start_order_ws
 from broker.data_fetch import get_prev_day_ohlc_for_symbol
 
 from config.settings import CLIENT_ID
@@ -109,7 +109,22 @@ def run():
         except Exception as e:
             error_log(f"{engine.symbol} RECOVERY FAILED: {e}")
 
-    log("RECOVERY COMPLETE")
+    log("INITIAL RECOVERY COMPLETE")
+
+    # --------------------------------------
+    # 🔥 RECONNECT RESYNC
+    # --------------------------------------
+    def resync_all():
+
+        log("🔄 RECONNECT RESYNC START")
+
+        for engine in engines:
+            try:
+                sync_engine(engine)
+            except Exception as e:
+                error_log(f"{engine.symbol} RESYNC FAILED: {e}")
+
+        log("✅ RECONNECT RESYNC COMPLETE")
 
     # --------------------------------------
     # PRICE CALLBACK
@@ -126,9 +141,9 @@ def run():
             print(f"LTP {symbol} → {price}")
 
             # ROUTE TO ENGINE
-            for eng in engines:
-                if eng.symbol == symbol:
-                    eng.on_tick(price)
+            for engine in engines:
+                if engine.symbol == symbol:
+                    engine.on_tick(price)
 
             # ----------------------------------
             # EOD EXIT
@@ -136,8 +151,8 @@ def run():
             if is_eod_exit_time():
                 log("EOD EXIT TRIGGERED")
 
-                for engin in engines:
-                    engin.force_exit()
+                for engine in engines:
+                    engine.force_exit()
 
         except Exception as ex:
             error_log(f"MAIN ERROR: {ex}")
@@ -149,8 +164,8 @@ def run():
         try:
             symbol = msg.get("symbol")
 
-            for egn in engines:
-                if egn.symbol == symbol:
+            for engine in engines:
+                if engine.symbol == symbol:
 
                     if event_type == "TRADE":
                         engine.handle_trade_update(msg)
@@ -158,8 +173,11 @@ def run():
                     elif event_type == "ORDER":
                         engine.handle_order_update(msg)
 
+                    elif event_type == "POSITION":
+                        engine.handle_position_update(msg)
+
         except Exception as exp:
-            error_log(f"ORDER ROUTER ERROR: {exp}")
+            error_log(f"ROUTER ERROR: {exp}")
 
     # --------------------------------------
     # START DATA WS (THREAD)
@@ -175,7 +193,7 @@ def run():
     # --------------------------------------
     threading.Thread(
         target=start_order_ws,
-        args=(fyers.token, engine_router),
+        args=(fyers.token, engine_router, resync_all),
         daemon=True
     ).start()
 

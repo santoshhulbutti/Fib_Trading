@@ -1,191 +1,301 @@
-# 📈 FYERS Algo Trading Bot (Sensex Options)
+# 📊 Sensex Options Fibonacci Trading Bot
 
-A fully automated, event-driven algorithmic trading system for **BSE Sensex Options (ATM CE/PE)** using the FYERS API.
-This bot implements a **Fibonacci-based breakout strategy** with advanced order handling, trailing stop-loss, and real-time execution.
+A **fully event-driven, recovery-safe intraday trading system** built for **BSE Sensex options**, using **pure price-action + Fibonacci levels**.
+Designed with **institutional-grade execution flow**, real-time WebSockets, and broker-synced recovery—without relying on databases.
 
 ---
 
 # 🚀 Overview
 
-This project is designed to:
+This project implements a **systematic trading engine** that:
 
-* Trade **ATM CALL & PUT options automatically**
-* Use **previous day OHLC** to compute Fibonacci levels
-* Execute trades using **event-driven architecture (low latency)**
-* Manage risk via **fixed SL + dynamic trailing SL**
-* Operate fully automated with **no manual inputs**
+* Trades **ATM Sensex Call & Put options**
+* Uses **Fibonacci retracement levels** derived from **previous day OHLC**
+* Executes trades using **stop-buy breakout logic**
+* Maintains **strict one-trade-per-side discipline**
+* Automatically manages **SL + trailing SL**
+* Ensures **state consistency using broker sync + recovery (no DB required)**
 
 ---
 
-# 🧠 Strategy Summary
+# 🧠 Core Philosophy
 
-### Core Logic
+```text
+Broker = Truth
+Engine State = Mirror
+WebSocket = Trigger
+```
 
-1. Fetch previous day **High, Low, Close**
-2. Calculate **ATM strike**
-3. Generate **Fibonacci levels**
-4. Monitor real-time price using WebSocket
-5. Execute trades based on:
-
-   * First trade trigger logic
-   * Subsequent breakout logic
-6. Manage trades using:
-
-   * Fixed SL (25 points)
-   * Trailing SL ladder
-7. Exit all positions before **3:20 PM**
+* No blind assumptions
+* No polling-based execution
+* Fully event-driven
 
 ---
 
 # 🏗️ Project Structure
 
-```
-fyers_algo_bot/
+```text
+Fib_Trading/
 │
-├── main.py                    # Entry point (orchestrator)
-│
-├── config/
-│   ├── settings.py           # API keys, system config
-│   ├── symbols.py            # ATM + expiry + symbol logic
-│   └── trading_params.py     # Strategy parameters
+├── main.py                     # Entry point
 │
 ├── core/
-│   ├── engine.py             # Ultra-fast event-driven engine
-│   ├── state.py              # Trade state tracking
-│   └── events.py             # Cross/trigger detection
-│
-├── strategy/
-│   └── fib_strategy.py       # Strategy rules (pluggable)
+│   ├── engine.py              # Execution engine (brain)
+│   ├── state.py               # Trade state management
+│   ├── events.py              # Fast price-level logic
+│   └── recovery.py            # Institutional-grade recovery system
 │
 ├── broker/
-│   ├── auth.py               # FYERS authentication
-│   ├── orders.py             # Order placement/modification
-│   ├── data_ws.py            # WebSocket handling
-│   └── data_fetch.py         # Historical OHLC fetch
+│   ├── auth.py                # Fyers authentication
+│   ├── data_ws.py             # Price WebSocket
+│   ├── order_ws.py            # Order/Trade/Position WebSocket
+│   ├── orders.py              # All broker actions
+│   └── data_fetch.py          # Historical OHLC
+│
+├── strategy/
+│   └── fib_strategy.py        # Fibonacci logic + SL calculation
+│
+├── config/
+│   ├── settings.py            # API + system config
+│   ├── symbols.py             # Option symbol generation (expiry logic)
+│   └── trading_params.py      # Strategy parameters
 │
 ├── utils/
-│   ├── logger.py             # Logging system
-│   ├── helpers.py            # Utility functions
-│   └── time_utils.py         # Time checks (EOD)
+│   ├── logger.py              # Logging
+│   ├── helpers.py             # Utility helpers
+│   └── time_utils.py          # Market time checks
 │
 ├── data/
-│   ├── cache/                # Daily cached values
-│   └── instruments/          # Instrument dumps (optional)
-│
-├── logs/
-│   ├── trades.log
-│   ├── errors.log
-│   └── system.log
+│   └── holidays_2026.json     # Trading holidays
 │
 ├── tests/
 │   ├── test_engine.py
 │   └── test_strategy.py
 │
-├── requirements.txt
-└── README.md
+└── requirements.txt
 ```
 
 ---
 
 # ⚙️ Tech Stack
 
-| Component       | Technology            |
-| --------------- | --------------------- |
-| Language        | Python 3.10+          |
-| Broker API      | FYERS API v3          |
-| Data Feed       | WebSocket (real-time) |
-| Architecture    | Event-driven          |
-| Deployment      | AWS EC2 (recommended) |
-| Logging         | File-based logging    |
-| Version Control | Git                   |
+| Component    | Technology                          |
+| ------------ | ----------------------------------- |
+| Language     | Python 3.11+                        |
+| Broker API   | Fyers API v3                        |
+| Market Data  | WebSocket (symbolUpdate)            |
+| Execution    | WebSocket (orders/trades/positions) |
+| Architecture | Event-driven                        |
+| Storage      | None (broker-synced recovery)       |
 
 ---
 
-# ⚡ Key Features
+# 🔄 System Flow (High-Level)
 
-### ✅ Fully Automated
-
-* No manual inputs (ATM, OHLC auto-calculated)
-
-### ✅ Event-Driven Engine
-
-* Executes logic only on meaningful price changes
-* Ultra-low latency (O(1) per tick)
-
-### ✅ Smart Order Management
-
-* Stop-buy entry orders
-* Cancel & replace logic
-* SL + Trailing SL updates
-
-### ✅ Risk Management
-
-* Fixed SL (25 points)
-* Trailing SL ladder
-* One active trade per side
-
-### ✅ Independent Engines
-
-* Separate logic for:
-
-  * CALL side
-  * PUT side
-
-### ✅ End-of-Day Safety
-
-* Auto square-off at 3:20 PM
-
----
-
-# 🔄 Execution Flow
-
-## 1. System Start
-
-* Authenticate with FYERS
-* Initialize logging
-
-## 2. Pre-Market Setup
-
-* Fetch previous day OHLC
-* Calculate ATM strike
-* Generate option symbols
-* Compute Fibonacci levels
-
-## 3. Live Execution
-
-* Start WebSocket
-* For each tick:
-
-  * Detect level crossing
-  * Apply entry logic
-  * Manage trades
-
-## 4. Trade Management
-
-* Place entry orders
-* Confirm execution
-* Place SL order
-* Update trailing SL
-
-## 5. End-of-Day
-
-* Close all open positions
-* Cancel pending orders
-
----
-
-# 📦 Installation
-
-## 1. Clone Repository
-
-```bash
-git clone https://github.com/your-repo/fyers-algo-bot.git
-cd fyers-algo-bot
+```text
+Start Bot
+   ↓
+Load Config
+   ↓
+Fetch Previous Day OHLC
+   ↓
+Generate Fibonacci Levels
+   ↓
+Create Engines (CALL + PUT)
+   ↓
+INITIAL RECOVERY (sync with broker)
+   ↓
+Start WebSockets
+   ↓
+Live Trading Loop
 ```
 
 ---
 
-## 2. Install Dependencies
+# 🔥 Execution Flow (Detailed)
+
+## 📈 Price Flow
+
+```text
+Tick (WebSocket)
+   ↓
+Engine.on_tick()
+   ↓
+Level detection (O(1))
+   ↓
+Entry / SL / Trailing decisions
+```
+
+---
+
+## 💰 Trade Flow
+
+```text
+Entry condition met
+   ↓
+Stop-buy order placed
+   ↓
+Trade WebSocket confirms fill
+   ↓
+Engine.handle_trade_update()
+   ↓
+SL order placed immediately
+```
+
+---
+
+## 🛡️ Risk Flow
+
+```text
+Price hits SL
+   ↓
+Broker executes SL
+   ↓
+Position update WebSocket
+   ↓
+Engine.handle_position_update()
+   ↓
+State reset
+```
+
+---
+
+# 🔁 Recovery System (CRITICAL)
+
+## ✅ Startup Recovery
+
+```text
+Bot starts
+   ↓
+Fetch positions + orders
+   ↓
+Rebuild:
+   - active_trade
+   - entry_order_id
+   - sl_order_id
+```
+
+---
+
+## ✅ Reconnect Recovery
+
+```text
+WebSocket reconnects
+   ↓
+on_connect()
+   ↓
+Trigger resync_all()
+   ↓
+sync_engine()
+   ↓
+State corrected
+```
+
+---
+
+## ✅ Position Sync (Real-time)
+
+```text
+Broker position changes
+   ↓
+on_position()
+   ↓
+Engine.handle_position_update()
+   ↓
+State updated instantly
+```
+
+---
+
+# 📊 Strategy Logic
+
+---
+
+## 🎯 Entry Rules
+
+### First Trade
+
+* Trigger = `level - SL_POINTS`
+* If price hits trigger → place stop-buy at level
+
+---
+
+## 🔁 Subsequent Trades
+
+* Only after previous trade exits
+* Entry when price crosses level from below
+
+---
+
+## 🚫 Restrictions
+
+* Only **1 active trade per side**
+* No re-entry until trade exits
+
+---
+
+## 🛑 Stop Loss
+
+* Fixed: `entry - SL_POINTS`
+
+---
+
+## 📈 Trailing SL
+
+Defined in `trading_params.py`:
+
+```python
+TRAILING_RULES = {
+    200: 50,
+    400: 200,
+    ...
+}
+```
+
+---
+
+## ⏰ EOD Exit
+
+* All positions closed before **3:20 PM**
+
+---
+
+# ⚡ Performance Design
+
+* O(1) level detection (no loops)
+* No polling (WebSocket-only)
+* Lightweight logging
+* Async threads for WS
+
+---
+
+# 🔐 Security
+
+* Uses **environment variables** for API keys
+* No credentials stored in code
+
+---
+
+# 🧪 Modes
+
+## 🧪 Test Mode
+
+* Equity trading (e.g., HDFCBANK)
+* Small SL
+* Fast iteration
+
+## 🚀 Live Mode
+
+* Sensex options
+* Full strategy rules
+
+---
+
+# ▶️ How to Run
+
+---
+
+## 1. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -193,118 +303,110 @@ pip install -r requirements.txt
 
 ---
 
-## 3. Configure Settings
+## 2. Set Environment Variables
 
-Edit:
-
-```
-config/settings.py
-```
-
-Add:
-
-```python
-CLIENT_ID = "your_client_id"
-SECRET_KEY = "your_secret_key"
-REDIRECT_URI = "your_redirect_url"
+```bash
+set FYERS_CLIENT_ID=your_client_id
+set FYERS_SECRET_KEY=your_secret
 ```
 
 ---
 
-# ▶️ Running the Bot
+## 3. Run the Bot
 
 ```bash
 python main.py
 ```
-
----
-
-# 🔐 Authentication Flow
-
-1. Script generates login URL
-2. Login via browser
-3. Copy auth code
-4. Paste in terminal
-
----
-
-# 📊 Logs
-
-Logs are stored in `/logs`:
-
-| File       | Description         |
-| ---------- | ------------------- |
-| trades.log | Trade entries/exits |
-| errors.log | Errors & failures   |
-| system.log | System events       |
 
 ---
 
 # ⚠️ Important Notes
 
-* Ensure **stable internet connection**
-* Use **static IP** for FYERS API
-* Start bot before market opens
-* Always test with **small capital first**
+---
+
+## 🚨 Do NOT skip these
+
+* Verify symbol generation (weekly/monthly expiry)
+* Test reconnect scenarios
+* Run with **1 lot initially**
 
 ---
 
-# 🧪 Testing
+## 🧠 Known Trade-offs
 
-Run unit tests:
+* No database → state derived from broker
+* trades_today resets on restart
+* first_trade_done resets
 
-```bash
-pytest tests/
+---
+
+# 📈 Future Enhancements
+
+---
+
+## 🔹 High Priority
+
+* Max daily loss enforcement
+* Trade journal (CSV)
+* PnL tracking
+
+---
+
+## 🔹 Advanced
+
+* Multi-strategy engine
+* Position scaling (pyramiding)
+* Auto-restart watchdog
+* Latency monitoring
+
+---
+
+## 🔹 Professional Level
+
+* Dashboard (Streamlit)
+* Backtesting engine
+* Multi-broker support
+
+---
+
+# 🧠 Final Insight
+
+```text
+This is not just a bot.
+This is a real-time, event-driven trading system.
 ```
 
+* Execution is handled by WebSocket
+* State is validated by broker
+* Recovery ensures consistency
+
 ---
 
-# ☁️ Deployment (AWS EC2)
+# 🚀 Disclaimer
 
-### Steps:
+This project is for educational and personal use.
+Live trading involves risk. Always test thoroughly before deploying real capital.
 
-1. Launch Ubuntu EC2 instance
-2. Install Python
-3. Upload project
-4. Run using:
+---
 
-```bash
-screen -S algo
-python main.py
+# 🙌 Contribution
+
+You can extend this system by:
+
+* Adding new strategies
+* Improving risk management
+* Building UI/dashboard
+
+---
+
+# 📌 Final Status
+
+```text
+Execution Engine      ✅
+Recovery System       ✅
+WebSocket Handling    ✅
+Symbol Logic          ✅
+Production Ready      ⚠️ (after testing)
 ```
-
----
-
-# 🔮 Future Enhancements
-
-* ✅ Order execution via WebSocket (real-time fills)
-* ✅ Position reconciliation system
-* ✅ Multi-strategy support
-* ✅ Dashboard (PnL + metrics)
-* ✅ Telegram alerts
-* ✅ Database logging (PostgreSQL)
-* ✅ Auto-restart on crash
-* ✅ Backtesting engine
-* ✅ Multi-broker support
-
----
-
-# 🛑 Risk Disclaimer
-
-This software is for educational purposes only.
-Trading involves financial risk. Use at your own discretion.
-
----
-
-# 🤝 Contributing
-
-Pull requests are welcome. For major changes, open an issue first.
-
----
-
-# 📌 Final Thought
-
-This is not just a script—it’s a **trading system**.
-Execution quality, discipline, and risk control matter more than strategy.
 
 ---

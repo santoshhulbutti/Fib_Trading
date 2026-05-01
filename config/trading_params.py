@@ -5,7 +5,7 @@
 # ==========================================
 # MODE SWITCH (IMPORTANT)
 # ==========================================
-TEST_MODE = True   # ✅ True = equity testing | False = live options
+test_mode = True   # ✅ True = equity testing | False = live options
 
 
 # ==========================================
@@ -21,7 +21,7 @@ FIB_RATIOS = [
 # ==========================================
 # ENTRY & STOP LOSS
 # ==========================================
-if TEST_MODE:
+if test_mode:
     SL_POINTS = 2   # small SL for equity testing
 else:
     SL_POINTS = 25  # real strategy value (options)
@@ -30,7 +30,7 @@ else:
 # ==========================================
 # TRAILING SL RULES
 # ==========================================
-if TEST_MODE:
+if test_mode:
     # ---- FAST TRAILING (EQUITY TESTING) ----
     TRAILING_RULES = {
         5: 2,
@@ -64,7 +64,7 @@ ENABLE_FIRST_TRADE_TRIGGER_LOGIC = True
 # ==========================================
 # RISK CONTROL
 # ==========================================
-if TEST_MODE:
+if test_mode:
     MAX_TRADES_PER_DAY = 50
     MAX_DAILY_LOSS = 1000
 else:

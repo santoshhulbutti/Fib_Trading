@@ -21,8 +21,8 @@ MONTH_MAP = {
 # LOAD HOLIDAYS
 # ------------------------------------------
 def load_holidays():
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    file_path = BASE_DIR / "data" / "holidays_2026.json"
+    base_dir = Path(__file__).resolve().parent.parent
+    file_path = base_dir / "data" / "holidays_2026.json"
 
     with open(file_path, "r") as f:
         return set(json.load(f))

@@ -19,8 +19,7 @@ from broker.orders import (
     cancel_order,
     place_sl_order,
     modify_order,
-    get_positions,
-    place_market_order
+    close_position
 )
 
 from utils.logger import log, error_log
@@ -85,6 +84,13 @@ class Engine:
                 log(f"{self.symbol} TRAIL SL → {new_sl}")
 
         # ----------------------------------
+        # 🚨 ENTRY LOCK (RECOVERY SAFE)
+        # ----------------------------------
+        if state.active_trade or state.entry_order_id:
+            state.prev_price = price
+            return
+
+        # ----------------------------------
         # ENTRY LOGIC (NO EXECUTION HERE)
         # ----------------------------------
         if not state.active_trade and not state.entry_order_id:
@@ -144,7 +150,7 @@ class Engine:
             # Activate trade
             sl_price = calculate_sl(fill_price)
 
-            self.state.set_active_trade(fill_price, sl_price)
+            self.state.set_active_trade(fill_price, sl_price, filled_qty)
             self.state.entry_order_id = None
             self.state.first_trade_done = True
 
@@ -173,19 +179,22 @@ class Engine:
             if self.state.sl_order_id:
                 cancel_order(self.fyers, self.state.sl_order_id)
 
-            positions = get_positions(self.fyers)
+            # Clean exit via orders layer
+            close_position(self.fyers, self.symbol)
 
-            for pos in positions:
-                if pos["symbol"] == self.symbol and pos["qty"] != 0:
-                    qty = abs(pos["qty"])
-                    side = "SELL" if pos["qty"] > 0 else "BUY"
-
-                    log(f"{self.symbol} EXIT | Qty: {qty} | Side: {side}")
-
-                    place_market_order(self.fyers, self.symbol, qty, side)
-                    return
-
-            log(f"{self.symbol} NO POSITION FOUND")
+            # positions = get_positions(self.fyers)
+            #
+            # for pos in positions:
+            #     if pos["symbol"] == self.symbol and pos["qty"] != 0:
+            #         qty = abs(pos["qty"])
+            #         side = "SELL" if pos["qty"] > 0 else "BUY"
+            #
+            #         log(f"{self.symbol} EXIT | Qty: {qty} | Side: {side}")
+            #
+            #         place_market_order(self.fyers, self.symbol, qty, side)
+            #         return
+            #
+            # log(f"{self.symbol} NO POSITION FOUND")
 
         except Exception as e:
             error_log(f"{self.symbol} EXIT ERROR: {e}")

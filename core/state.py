@@ -24,6 +24,7 @@ class TradeState:
         # --------------------------------------
         self.entry_order_id = None   # Pending entry order
         self.sl_order_id = None      # SL order after fill
+        self.qty = 0
 
         # --------------------------------------
         # STRATEGY FLAGS
@@ -45,18 +46,19 @@ class TradeState:
 
         self.entry_order_id = None
         self.sl_order_id = None
+        self.qty = 0
 
     # --------------------------------------
     # SET ACTIVE TRADE (AFTER FILL)
     # --------------------------------------
-    def set_active_trade(self, entry_price, sl_price):
+    def set_active_trade(self, entry_price, sl_price, qty=1):
         self.active_trade = True
         self.entry_price = entry_price
         self.sl_price = sl_price
+        self.qty = qty
 
         # Clear entry order (now filled)
         self.entry_order_id = None
-
         self.trades_today += 1
 
     # --------------------------------------

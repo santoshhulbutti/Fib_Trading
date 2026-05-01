@@ -3,7 +3,6 @@
 # ==========================================
 
 from fyers_apiv3.FyersWebsocket import data_ws
-from fyers_apiv3.FyersWebsocket import order_ws
 from utils.logger import log
 
 

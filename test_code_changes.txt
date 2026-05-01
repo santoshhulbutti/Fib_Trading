@@ -1,3 +1,26 @@
+Date 01-May-2025
+FILES TO UPDATE FOR LIVE DEPLOYMENT (IMPORTANT)
+When you switch from TEST → LIVE (options), you must update these:
+    config/trading_params.py
+        →  test_mode = False
+        →  Parameter	        Change
+           SL_POINTS	        2 → 25
+           TRAILING_RULES	    equity → options
+
+    main.py
+        →  test_mode = False
+
+    config/settings.py
+        For live:
+            Ensure env variables exist
+            No hardcoded keys
+            AWS-ready
+
+
+
+
+
+Date - 30-Apr-2025
 in main.py
     Initialize code block commented for initial test on Equity trade with 1 qty
 

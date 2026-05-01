@@ -149,7 +149,7 @@ def close_position(fyers, symbol):
                 qty = abs(pos["qty"])
                 side = "SELL" if pos["qty"] > 0 else "BUY"
 
-                log(f"{symbol} CLOSING POSITION")
+                log(f"{symbol} CLOSING POSITION | Qty={qty} | Side={side}")
 
                 place_market_order(fyers, symbol, qty, side)
                 return
@@ -158,3 +158,16 @@ def close_position(fyers, symbol):
 
     except Exception as e:
         error_log(f"{symbol} CLOSE POSITION ERROR: {e}")
+
+# ------------------------------------------
+# GET ORDERBOOK
+# ------------------------------------------
+def get_orderbook(fyers):
+
+    try:
+        res = fyers.orderbook()
+        return res.get("orderBook", [])
+
+    except Exception as e:
+        error_log(f"ORDERBOOK ERROR: {e}")
+        return []

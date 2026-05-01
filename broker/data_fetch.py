@@ -2,8 +2,8 @@
 # HISTORICAL DATA FETCH
 # ==========================================
 
-import datetime
-from utils.logger import log
+# import datetime
+# from utils.logger import log
 
 
 # def get_prev_day_ohlc(fyers, symbol="BSE:SENSEX-INDEX"):

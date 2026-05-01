@@ -10,17 +10,19 @@ from broker.order_ws import start_order_ws   # ✅ NEW
 from broker.data_fetch import get_prev_day_ohlc_for_symbol
 
 from config.settings import CLIENT_ID
-from config.trading_params import FIB_RATIOS
 from config.symbols import get_option_symbols
 
 from strategy.fib_strategy import generate_fib_levels
 
 from core.engine import Engine
+from core.recovery import sync_engine
+
 from utils.logger import log, error_log
 from utils.time_utils import is_eod_exit_time
 
 import datetime
 import threading
+import time
 
 
 # ------------------------------------------
@@ -47,12 +49,12 @@ def initialize_system():
     # 🔴 SWITCH MODE HERE
     # ======================================
 
-    TEST_MODE = True   # ✅ Change to False for options
+    test_mode = True   # ✅ Change to False for options
 
     # ======================================
     # TEST MODE (EQUITY)
     # ======================================
-    if TEST_MODE:
+    if test_mode:
 
         eq_symbol = "NSE:HDFCBANK-EQ"
 
@@ -76,6 +78,7 @@ def initialize_system():
         call_symbol = symbols["call"]
         put_symbol = symbols["put"]
 
+        # Fetch OHLC for options safely
         call_ohlc = get_prev_day_ohlc_for_symbol(fyers, call_symbol)
         put_ohlc = get_prev_day_ohlc_for_symbol(fyers, put_symbol)
 
@@ -98,6 +101,17 @@ def run():
     log("STARTING WEBSOCKETS...")
 
     # --------------------------------------
+    # RECOVERY SYNC
+    # --------------------------------------
+    for engine in engines:
+        try:
+            sync_engine(engine)
+        except Exception as e:
+            error_log(f"{engine.symbol} RECOVERY FAILED: {e}")
+
+    log("RECOVERY COMPLETE")
+
+    # --------------------------------------
     # PRICE CALLBACK
     # --------------------------------------
     def on_message(msg):
@@ -112,9 +126,9 @@ def run():
             print(f"LTP {symbol} → {price}")
 
             # ROUTE TO ENGINE
-            for engine in engines:
-                if engine.symbol == symbol:
-                    engine.on_tick(price)
+            for eng in engines:
+                if eng.symbol == symbol:
+                    eng.on_tick(price)
 
             # ----------------------------------
             # EOD EXIT
@@ -122,27 +136,30 @@ def run():
             if is_eod_exit_time():
                 log("EOD EXIT TRIGGERED")
 
-                for engine in engines:
-                    engine.force_exit()
+                for engin in engines:
+                    engin.force_exit()
 
-        except Exception as e:
-            error_log(f"MAIN ERROR: {e}")
+        except Exception as ex:
+            error_log(f"MAIN ERROR: {ex}")
 
     # --------------------------------------
     # ORDER/TRADES CALLBACK
     # --------------------------------------
     def engine_router(event_type, msg):
+        try:
+            symbol = msg.get("symbol")
 
-        symbol = msg.get("symbol")
+            for egn in engines:
+                if egn.symbol == symbol:
 
-        for engine in engines:
-            if engine.symbol == symbol:
+                    if event_type == "TRADE":
+                        engine.handle_trade_update(msg)
 
-                if event_type == "TRADE":
-                    engine.handle_trade_update(msg)
+                    elif event_type == "ORDER":
+                        engine.handle_order_update(msg)
 
-                elif event_type == "ORDER":
-                    engine.handle_order_update(msg)
+        except Exception as exp:
+            error_log(f"ORDER ROUTER ERROR: {exp}")
 
     # --------------------------------------
     # START DATA WS (THREAD)
@@ -166,7 +183,7 @@ def run():
     # KEEP MAIN ALIVE
     # --------------------------------------
     while True:
-        pass
+        time.sleep(1)
 
 
 # ------------------------------------------

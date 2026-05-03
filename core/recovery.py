@@ -13,7 +13,7 @@ def sync_engine(engine):
     state = engine.state
     fyers = engine.fyers
 
-    log(f"{symbol} 🔄 RECOVERY START")
+    log(f"{symbol} RECOVERY START")
 
     # --------------------------------------
     # FETCH BROKER STATE
@@ -35,14 +35,14 @@ def sync_engine(engine):
         qty = abs(active_position["qty"])
         entry_price = float(active_position.get("avgPrice", 0))
 
-        log(f"{symbol} ✅ POSITION FOUND | Qty={qty} | Entry={entry_price}")
+        log(f"{symbol} POSITION FOUND | Qty={qty} | Entry={entry_price}")
 
         sl_price = calculate_sl(entry_price)
 
         state.set_active_trade(entry_price, sl_price, qty)
 
     else:
-        log(f"{symbol} ❌ NO ACTIVE POSITION")
+        log(f"{symbol} NO ACTIVE POSITION")
         state.reset_trade()
 
     # --------------------------------------
@@ -74,11 +74,11 @@ def sync_engine(engine):
 
         state.entry_order_id = latest["id"]
 
-        log(f"{symbol} 🔁 ENTRY ORDER RECOVERED")
+        log(f"{symbol} ENTRY ORDER RECOVERED")
 
         for o in entry_orders[:-1]:
             cancel_order(fyers, o["id"])
-            log(f"{symbol} ❌ CANCELLED STALE ENTRY ORDER")
+            log(f"{symbol} CANCELLED STALE ENTRY ORDER")
 
     else:
         state.entry_order_id = None
@@ -97,11 +97,11 @@ def sync_engine(engine):
 
             broker_sl = float(latest_sl.get("stopPrice", 0))
 
-            log(f"{symbol} 🛡️ SL ORDER RECOVERED | Broker SL={broker_sl}")
+            log(f"{symbol} SL ORDER RECOVERED | Broker SL={broker_sl}")
 
             # 🔥 VALIDATE SL
             if abs(broker_sl - expected_sl) > 1:
-                log(f"{symbol} ⚠ SL MISMATCH → FIXING")
+                log(f"{symbol} SL MISMATCH -> FIXING")
 
                 cancel_order(fyers, latest_sl["id"])
 
@@ -113,20 +113,20 @@ def sync_engine(engine):
                 cancel_order(fyers, o["id"])
 
         else:
-            # 🚨 CRITICAL: Missing SL → recreate
-            log(f"{symbol} ⚠ NO SL FOUND → RECREATING")
+            # CRITICAL: Missing SL → recreate
+            log(f"{symbol} NO SL FOUND -> RECREATING")
 
             res = place_sl_order(fyers, symbol, state.qty, expected_sl)
 
             state.sl_order_id = res.get("id")
 
-            log(f"{symbol} 🛡️ NEW SL PLACED @ {expected_sl}")
+            log(f"{symbol} NEW SL PLACED @ {expected_sl}")
 
     else:
         # no position → cancel all SL
         for o in sl_orders:
             cancel_order(fyers, o["id"])
-            log(f"{symbol} ❌ CANCELLED ORPHAN SL")
+            log(f"{symbol} CANCELLED ORPHAN SL")
 
         state.sl_order_id = None
 
@@ -142,9 +142,9 @@ def sync_engine(engine):
         status = o.get("status")
 
         if filled > 0 and status != 2:
-            log(f"{symbol} ⚠ PARTIAL FILL DETECTED → {filled}")
+            log(f"{symbol} PARTIAL FILL DETECTED -> {filled}")
 
-            # 🔥 SAFE ACTION: clear entry order id
+            # SAFE ACTION: clear entry order id
             state.entry_order_id = None
 
-    log(f"{symbol} ✅ RECOVERY COMPLETE")
+    log(f"{symbol} RECOVERY ENGINE COMPLETE")

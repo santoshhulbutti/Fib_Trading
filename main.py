@@ -61,6 +61,8 @@ def initialize_system():
         eq_ohlc = get_prev_day_ohlc_for_symbol(fyers, eq_symbol)
         eq_levels = generate_fib_levels(eq_ohlc["high"], eq_ohlc["low"])
 
+        print(eq_levels)
+
         eq_engine = Engine(fyers, eq_symbol, eq_levels)
 
         return fyers, [eq_engine], [eq_symbol]
@@ -98,7 +100,7 @@ def run():
 
     fyers, engines, symbols = initialize_system()
 
-    log("STARTING WEBSOCKETS...")
+    log("engine instance initializing complete")
 
     # --------------------------------------
     # RECOVERY SYNC
@@ -116,7 +118,7 @@ def run():
     # --------------------------------------
     def resync_all():
 
-        log("🔄 RECONNECT RESYNC START")
+        log("RECONNECT RESYNC START")
 
         for engine in engines:
             try:
@@ -124,7 +126,7 @@ def run():
             except Exception as e:
                 error_log(f"{engine.symbol} RESYNC FAILED: {e}")
 
-        log("✅ RECONNECT RESYNC COMPLETE")
+        log("RECONNECT RESYNC COMPLETE")
 
     # --------------------------------------
     # PRICE CALLBACK
@@ -179,6 +181,7 @@ def run():
         except Exception as exp:
             error_log(f"ROUTER ERROR: {exp}")
 
+    log("STARTING WEBSOCKETS...")
     # --------------------------------------
     # START DATA WS (THREAD)
     # --------------------------------------
@@ -191,9 +194,10 @@ def run():
     # --------------------------------------
     # START ORDER WS (THREAD)
     # --------------------------------------
+    order_token = CLIENT_ID+":"+fyers.token
     threading.Thread(
         target=start_order_ws,
-        args=(fyers.token, engine_router, resync_all),
+        args=(order_token, engine_router, resync_all),
         daemon=True
     ).start()
 

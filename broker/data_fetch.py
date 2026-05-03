@@ -74,7 +74,7 @@ def get_prev_day_ohlc_for_symbol(fyers, symbol):
     from datetime import date, timedelta
 
     today = date.today()
-    to_date = get_last_trading_day(today).strftime("%Y-%m-%d")
+    to_date = get_last_trading_day(today)
 
     # Previous trading day (for safety buffer)
     from_date = (to_date - timedelta(days=7)).strftime("%Y-%m-%d")
@@ -85,7 +85,7 @@ def get_prev_day_ohlc_for_symbol(fyers, symbol):
     data = {
         "symbol": symbol,
         "resolution": "D",
-        "date_format": "1",
+        "date_format": 0,
         "range_from": from_date,
         "range_to": to_date,
         "cont_flag": "1"
@@ -97,6 +97,25 @@ def get_prev_day_ohlc_for_symbol(fyers, symbol):
         raise Exception(f"OHLC Fetch Error for {symbol}: {res}")
 
     candles = res["candles"]
+
+    formatted_candles = []
+    for c in candles:
+        ts = c[0]
+
+        # Convert epoch → datetime
+        date = datetime.datetime.fromtimestamp(ts).strftime("%d-%m-%Y")
+
+        formatted_candles.append([
+            date,  # formatted date
+            c[1],  # open
+            c[2],  # high
+            c[3],  # low
+            c[4],  # close
+            c[5]  # volume
+        ])
+
+    candles = formatted_candles
+    print (candles)
 
     if len(candles) < 2:
         raise Exception(f"Not enough data for {symbol}")

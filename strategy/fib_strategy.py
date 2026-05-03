@@ -5,6 +5,9 @@
 from config.trading_params import FIB_RATIOS, SL_POINTS, TRAILING_RULES
 
 
+def round_to_tick(price, tick_size=0.05):
+    return round(round(price / tick_size) * tick_size, 2)
+
 # ------------------------------------------
 # GENERATE FIBONACCI LEVELS
 # ------------------------------------------
@@ -19,8 +22,9 @@ def generate_fib_levels(prev_high, prev_low):
     levels = [round(prev_high - diff * r, 2) for r in FIB_RATIOS]
 
     levels = sorted(set(levels))  # remove duplicates if any
+    rounded_levels = [round_to_tick(l) for l in levels]
 
-    return levels
+    return rounded_levels
 
 
 # ------------------------------------------

@@ -82,7 +82,7 @@ class Engine:
                 state.update_sl(new_sl)
                 if state.sl_order_id:
                     modify_order(self.fyers, state.sl_order_id, new_sl, new_sl)
-                    log(f"{self.symbol} TRAIL SL → {new_sl}")
+                    log(f"{self.symbol} TRAIL SL -> {new_sl}")
 
         # ----------------------------------
         # 🚨 ENTRY LOCK (RECOVERY SAFE)
@@ -125,7 +125,7 @@ class Engine:
         state.prev_price = price
 
     # --------------------------------------
-    # 🔥 REAL EXECUTION (FROM TRADE WS)
+    # REAL EXECUTION (FROM TRADE WS)
     # --------------------------------------
     def handle_trade_update(self, msg):
 
@@ -140,7 +140,7 @@ class Engine:
 
             # Partial fill (status != 2)
             if filled_qty > 0 and status != 2:
-                log(f"{self.symbol} PARTIAL FILL → {filled_qty}")
+                log(f"{self.symbol} PARTIAL FILL -> {filled_qty}")
                 return
 
             # Only process FILLED trades
@@ -151,7 +151,7 @@ class Engine:
             filled_qty = msg.get("filledQty", 0)
 
             if fill_price == 0 or filled_qty == 0:
-                log(f"{self.symbol} INVALID TRADE DATA → {msg}")
+                log(f"{self.symbol} INVALID TRADE DATA -> {msg}")
                 return
 
             log(f"{self.symbol} TRADE FILLED @ {fill_price}")

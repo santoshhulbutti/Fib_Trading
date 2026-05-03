@@ -4,6 +4,7 @@
 
 from fyers_apiv3.FyersWebsocket import order_ws
 from utils.logger import log, error_log
+from config.settings import CLIENT_ID, SECRET_KEY, REDIRECT_URI
 
 import time
 
@@ -28,16 +29,16 @@ def start_order_ws(access_token, engine_router, on_reconnect):
 
             # Prevent duplicate resync calls
             if now - last_resync_time["ts"] < RESYNC_COOLDOWN:
-                log("⏳ RESYNC SKIPPED (cooldown)")
+                log("RESYNC SKIPPED (cooldown)")
                 return
 
             last_resync_time["ts"] = now
 
-            log("🔄 WS RECONNECTED → TRIGGERING FULL RESYNC")
+            log("WS RECONNECTED -> TRIGGERING FULL RESYNC")
 
             on_reconnect()
 
-            log("✅ RESYNC COMPLETE")
+            log("RESYNC COMPLETE")
 
         except Exception as e:
             error_log(f"RESYNC ERROR: {e}")
@@ -47,7 +48,7 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # --------------------------------------
     def on_trade(msg):
         try:
-            log(f"TRADE → {msg.get('symbol')} | status={msg.get('status')}")
+            log(f"TRADE -> {msg.get('symbol')} | status={msg.get('status')}")
 
             # Route to engine
             engine_router("TRADE", msg)
@@ -60,7 +61,7 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # --------------------------------------
     def on_order(msg):
         try:
-            log(f"ORDER → {msg.get('symbol')} | status={msg.get('status')}")
+            log(f"ORDER -> {msg.get('symbol')} | status={msg.get('status')}")
 
             engine_router("ORDER", msg)
 
@@ -72,7 +73,7 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # --------------------------------------
     def on_position(msg):
         try:
-            log(f"POSITION → {msg.get('symbol')} | qty={msg.get('qty')}")
+            log(f"POSITION -> {msg.get('symbol')} | qty={msg.get('qty')}")
 
             engine_router("POSITION", msg)
 
@@ -83,21 +84,21 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # GENERAL EVENTS (OPTIONAL)
     # --------------------------------------
     def on_general(msg):
-        log(f"GENERAL UPDATE → {msg}")
+        log(f"GENERAL UPDATE -> {msg}")
 
     # --------------------------------------
     # CONNECT CALLBACK
     # --------------------------------------
     def on_connect():
         try:
-            log("🟢 ORDER WS CONNECTED")
+            log("ORDER WS CONNECTED")
 
             # Subscribe to all streams
             fyers.subscribe(
                 data_type="OnOrders,OnTrades,OnPositions,OnGeneral"
             )
 
-            # 🔥 CRITICAL: RESYNC STATE
+            # CRITICAL: RESYNC STATE
             trigger_resync()
 
             # Keep socket alive

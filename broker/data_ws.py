@@ -19,7 +19,7 @@ def start_ws(access_token, symbols, on_message):
             symbols=symbols,
             data_type="symbolUpdate"
         )
-        # fyers.keep_running()
+        fyers.keep_running()
 
     def on_close(message):
         log(f"WebSocket Closed: {message}")

@@ -71,7 +71,7 @@ def get_last_trading_day(today):
 
 
 def get_prev_day_ohlc_for_symbol(fyers, symbol):
-    from datetime import date, timedelta
+    from datetime import datetime, date, timedelta
 
     today = date.today()
     to_date = get_last_trading_day(today)
@@ -85,7 +85,7 @@ def get_prev_day_ohlc_for_symbol(fyers, symbol):
     data = {
         "symbol": symbol,
         "resolution": "D",
-        "date_format": 0,
+        "date_format": 1,
         "range_from": from_date,
         "range_to": to_date,
         "cont_flag": "1"
@@ -103,7 +103,7 @@ def get_prev_day_ohlc_for_symbol(fyers, symbol):
         ts = c[0]
 
         # Convert epoch → datetime
-        date = datetime.datetime.fromtimestamp(ts).strftime("%d-%m-%Y")
+        date = datetime.fromtimestamp(ts).strftime("%d-%m-%Y")
 
         formatted_candles.append([
             date,  # formatted date

@@ -4,6 +4,8 @@
 
 from fyers_apiv3 import fyersModel
 
+import pandas as pd
+
 from broker.auth import get_access_token
 from broker.data_ws import start_ws
 from broker.order_ws import start_order_ws
@@ -133,6 +135,10 @@ def run():
     # --------------------------------------
     def on_message(msg):
 
+        # print("Response:", msg)
+        # df = pd.DataFrame([msg])
+        # print(df[['ltp', 'symbol']])
+
         try:
             if "ltp" not in msg:
                 return
@@ -140,7 +146,7 @@ def run():
             symbol = msg.get("symbol")
             price = msg.get("ltp")
 
-            print(f"LTP {symbol} → {price}")
+            print(f"LTP {symbol} -> {price}")
 
             # ROUTE TO ENGINE
             for engine in engines:

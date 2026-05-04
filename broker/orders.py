@@ -17,18 +17,45 @@ def place_stop_buy(fyers, symbol, qty, trigger_price):
             "type": 3,  # STOP LIMIT
             "side": 1,  # BUY
             "productType": "INTRADAY",
-            "limitPrice": trigger_price,
+            "limitPrice": 0,
             "stopPrice": trigger_price,
             "validity": "DAY"
         }
 
         res = fyers.place_order(data)
-        log(f"{symbol} STOP BUY ORDER → {res}")
+        log(f"{symbol} STOP BUY ORDER -> {res}")
         return res
 
     except Exception as e:
         error_log(f"{symbol} STOP BUY ERROR: {e}")
         return {}
+
+
+# ------------------------------------------
+# PLACE STOP SELL ORDER
+# ------------------------------------------
+# def place_stop_sell(fyers, symbol, qty, trigger_price):
+#
+#     try:
+#         data = {
+#             "symbol": symbol,
+#             "qty": qty,
+#             "type": 3,  # STOP LIMIT
+#             "side": -1,  # SELL
+#             "productType": "INTRADAY",
+#             "limitPrice": trigger_price,
+#             "stopPrice": trigger_price,
+#             "validity": "DAY"
+#         }
+#
+#         res = fyers.place_order(data)
+#         log(f"{symbol} STOP BUY ORDER -> {res}")
+#         return res
+#
+#     except Exception as e:
+#         error_log(f"{symbol} STOP BUY ERROR: {e}")
+#         return {}
+
 
 
 # ------------------------------------------
@@ -49,7 +76,7 @@ def place_sl_order(fyers, symbol, qty, sl_price):
         }
 
         res = fyers.place_order(data)
-        log(f"{symbol} SL ORDER → {res}")
+        log(f"{symbol} SL ORDER -> {res}")
         return res
 
     except Exception as e:
@@ -75,7 +102,7 @@ def place_market_order(fyers, symbol, qty, side):
         }
 
         res = fyers.place_order(data)
-        log(f"{symbol} MARKET ORDER ({side}) → {res}")
+        log(f"{symbol} MARKET ORDER ({side}) -> {res}")
         return res
 
     except Exception as e:
@@ -113,7 +140,7 @@ def modify_order(fyers, order_id, price, trigger):
         }
 
         res = fyers.modify_order(data)
-        log(f"MODIFY ORDER → {res}")
+        log(f"MODIFY ORDER -> {res}")
         return res
 
     except Exception as e:

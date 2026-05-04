@@ -44,8 +44,10 @@ def detect_cross(prev_price, curr_price, level):
 # TRIGGER HIT (FIRST TRADE)
 # ------------------------------------------
 def trigger_hit(price, trigger_price):
-    return price <= trigger_price
+    return trigger_price-0.05 < price < trigger_price+0.05
 
+# def trigger_short_hit(price, trigger_s_price):
+#     return price >= trigger_s_price
 
 # ------------------------------------------
 # SL HIT

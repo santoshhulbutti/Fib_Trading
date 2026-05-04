@@ -7,6 +7,7 @@ from core.events import (
     get_level_index,
     detect_cross,
     trigger_hit,
+    # trigger_short_hit,
     sl_hit,
     calculate_trailing_sl
 )
@@ -16,6 +17,7 @@ from config.trading_params import SL_POINTS, TRAILING_RULES
 
 from broker.orders import (
     place_stop_buy,
+    # place_stop_sell,
     cancel_order,
     place_sl_order,
     modify_order,
@@ -56,6 +58,8 @@ class Engine:
 
         lower = self.levels[idx]
         upper = self.levels[idx + 1]
+
+        # print (upper, lower)
 
         # ----------------------------------
         # SL HIT
@@ -100,13 +104,23 @@ class Engine:
             if not state.first_trade_done:
 
                 trigger = upper - SL_POINTS
+                # trigger_s = lower + SL_POINTS
 
                 if trigger_hit(price, trigger):
 
                     res = place_stop_buy(self.fyers, self.symbol, 1, upper)
-                    state.entry_order_id = res.get("id")
+                    if res.get('s')=='ok':
+                        state.entry_order_id = res.get("id")
+                        log(f"{self.symbol} FIRST LONG ORDER PLACED @ {upper}")
+                    if res.get('s') =='error':
+                        log(f"{self.symbol} FIRST LONG ORDER error {res.get('message')}")
 
-                    log(f"{self.symbol} FIRST ORDER PLACED @ {upper}")
+                # if trigger_short_hit(price, trigger_s):
+                #
+                #     res = place_stop_sell(self.fyers, self.symbol, 1, upper)
+                #     state.entry_order_id = res.get("id")
+                #
+                #     log(f"{self.symbol} FIRST SHORT ORDER PLACED @ {upper}")
 
             # -------- SUBSEQUENT TRADES --------
             else:
@@ -118,6 +132,13 @@ class Engine:
                     state.entry_order_id = res.get("id")
 
                     log(f"{self.symbol} BREAKOUT ORDER @ {upper}")
+
+                # if cross == "CROSS_DOWN":
+                #
+                #     res = place_stop_sell(self.fyers, self.symbol, 1, lower)
+                #     state.entry_order_id = res.get("id")
+                #
+                #     log(f"{self.symbol} BREAKDOWN ORDER @ {lower}")
 
         # ----------------------------------
         # UPDATE PREVIOUS PRICE
@@ -132,8 +153,6 @@ class Engine:
         try:
             if msg.get("symbol") != self.symbol:
                 return
-
-            status = msg.get("status")
 
             filled_qty = msg.get("filledQty", 0)
             status = msg.get("status")

@@ -21,7 +21,7 @@ def _parse_time(time_str):
 # CURRENT TIME
 # ------------------------------------------
 def now():
-    return datetime.now()
+    return datetime.now().time()
 
 
 # ------------------------------------------
@@ -52,11 +52,12 @@ def is_market_closed():
 def is_eod_exit_time():
     current = now()
 
-    eod_h, eod_m = _parse_time(EOD_EXIT_TIME)
-    eod = current.replace(hour=eod_h, minute=eod_m, second=0)
+    # eod_h, eod_m = _parse_time(EOD_EXIT_TIME)
+    # eod = current.replace(hour=eod_h, minute=eod_m, second=0)
 
     # return current >= eod
-    return current.hour == 15 and current.minute >= 20
+    return current >= EOD_EXIT_TIME
+    # return current.hour == 15 and current.minute >= 20
 
 
 # ------------------------------------------

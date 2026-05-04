@@ -5,7 +5,7 @@
 # ==========================================
 # MODE SWITCH (IMPORTANT)
 # ==========================================
-test_mode = True   # ✅ True = equity testing | False = live options
+test_mode = True   #  True = equity testing | False = live options
 
 
 # ==========================================

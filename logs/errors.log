@@ -35,3 +35,66 @@
 [ERROR] 2026-05-03 14:37:59 | ORDER WS ERROR: [Errno 11001] getaddrinfo failed
 [ERROR] 2026-05-03 14:38:09 | ORDER WS ERROR: [Errno 11001] getaddrinfo failed
 [ERROR] 2026-05-03 16:57:12 | ORDER WS ERROR: Connection to remote host was lost.
+[ERROR] 2026-05-04 09:55:02 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:03 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:03 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:04 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:04 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:05 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:05 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:05 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:05 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:06 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:06 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:06 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:06 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:06 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:06 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:07 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:07 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:08 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:08 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:08 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:08 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:08 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:08 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:09 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:09 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:10 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:10 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:10 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:10 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:11 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:11 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:11 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:11 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:12 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:12 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:12 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:12 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:13 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:13 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:13 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:13 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:14 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:14 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 09:55:14 | NSE:HDFCBANK-EQ STOP BUY ERROR: 'charmap' codec can't encode character '\u2192' in position 60: character maps to <undefined>
+[ERROR] 2026-05-04 09:55:14 | MAIN ERROR: 'datetime.time' object has no attribute 'split'
+[ERROR] 2026-05-04 10:15:22 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:22 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:23 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:23 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:24 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:24 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:25 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:25 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:25 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:26 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:27 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:27 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:28 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:28 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:28 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:29 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:29 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-04 10:15:30 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'

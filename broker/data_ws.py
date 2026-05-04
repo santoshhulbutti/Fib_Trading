@@ -17,7 +17,7 @@ def start_ws(access_token, symbols, on_message):
         # Subscribe to symbols
         fyers.subscribe(
             symbols=symbols,
-            data_type="symbolUpdate"
+            data_type="SymbolUpdate"
         )
         fyers.keep_running()
 

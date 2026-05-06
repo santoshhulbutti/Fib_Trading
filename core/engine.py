@@ -150,8 +150,11 @@ class Engine:
     # --------------------------------------
     def handle_trade_update(self, msg):
 
+        log(f"{self.symbol} HANDLE TRADE EVENT: {msg}")
+
         try:
             if msg.get("symbol") != self.symbol:
+                print("handle_trade_update - Symbol mismatch")
                 return
 
             filled_qty = msg.get("filledQty", 0)
@@ -166,7 +169,8 @@ class Engine:
             if status != 2:
                 return
 
-            fill_price = float(msg.get("avgPrice", 0))
+            # fill_price = float(msg.get("avgPrice", 0))
+            fill_price = float(msg.get("tradedPrice") or msg.get("avgPrice") or 0)
             filled_qty = msg.get("filledQty", 0)
 
             if fill_price == 0 or filled_qty == 0:
@@ -195,12 +199,13 @@ class Engine:
     # OPTIONAL: ORDER EVENTS (LOGGING)
     # --------------------------------------
     def handle_order_update(self, msg):
-        log(f"{self.symbol} ORDER EVENT: {msg}")
+        log(f"{self.symbol} HANDLE ORDER EVENT: {msg}")
 
     # --------------------------------------
     # POSITION UPDATE (CRITICAL FOR SYNC)
     # --------------------------------------
     def handle_position_update(self, msg):
+        log(f"{self.symbol} HANDLE POSITION EVENT: {msg}")
 
         try:
             if msg.get("symbol") != self.symbol:
@@ -243,6 +248,7 @@ class Engine:
     # EXIT TRADE
     # --------------------------------------
     def exit_trade(self):
+        log(f"{self.symbol} EXIT TRADE EVENT")
 
         try:
             # Cancel SL first
@@ -274,6 +280,7 @@ class Engine:
     # FORCE EXIT (EOD)
     # --------------------------------------
     def force_exit(self):
+        log(f"{self.symbol} FORCED EXIT EVENT")
 
         if self.state.active_trade:
             log(f"{self.symbol} EOD FORCE EXIT")

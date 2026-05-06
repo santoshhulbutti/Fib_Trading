@@ -9,7 +9,7 @@ from utils.logger import log, error_log
 # PLACE STOP BUY ORDER
 # ------------------------------------------
 def place_stop_buy(fyers, symbol, qty, trigger_price):
-
+    from config.trading_params import SL_POINTS
     try:
         data = {
             "symbol": symbol,
@@ -18,7 +18,7 @@ def place_stop_buy(fyers, symbol, qty, trigger_price):
             "side": 1,  # BUY
             "productType": "INTRADAY",
             "limitPrice": 0,
-            "stopPrice": trigger_price,
+            "stopPrice": trigger_price+SL_POINTS,
             "validity": "DAY"
         }
 
@@ -62,6 +62,7 @@ def place_stop_buy(fyers, symbol, qty, trigger_price):
 # PLACE STOP LOSS ORDER (FOR LONG POSITION)
 # ------------------------------------------
 def place_sl_order(fyers, symbol, qty, sl_price):
+    from config.trading_params import SL_POINTS
 
     try:
         data = {
@@ -70,7 +71,7 @@ def place_sl_order(fyers, symbol, qty, sl_price):
             "type": 3,  # STOP LIMIT
             "side": -1,  # SELL
             "productType": "INTRADAY",
-            "limitPrice": sl_price,
+            "limitPrice": 0,#sl_price,
             "stopPrice": sl_price,
             "validity": "DAY"
         }

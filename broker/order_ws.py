@@ -47,11 +47,17 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # TRADE UPDATE (MOST IMPORTANT)
     # --------------------------------------
     def on_trade(msg):
+        print("TRADE WS RAW:", msg)
         try:
             log(f"TRADE -> {msg.get('symbol')} | status={msg.get('status')}")
+            order = msg.get("orders", {})
 
             # Route to engine
-            engine_router("TRADE", msg)
+            if not order:
+                return
+
+            engine_router("TRADE", order)
+            # engine_router("TRADE", msg)
 
         except Exception as e:
             error_log(f"TRADE WS ERROR: {e}")
@@ -60,6 +66,7 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # ORDER UPDATE (SECONDARY)
     # --------------------------------------
     def on_order(msg):
+        print("ORDER WS RAW:", msg)
         try:
             log(f"ORDER -> {msg.get('symbol')} | status={msg.get('status')}")
 
@@ -72,6 +79,7 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # POSITION UPDATE (OPTIONAL)
     # --------------------------------------
     def on_position(msg):
+        print("POSITIONS WS RAW:", msg)
         try:
             log(f"POSITION -> {msg.get('symbol')} | qty={msg.get('qty')}")
 

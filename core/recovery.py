@@ -6,6 +6,26 @@ from broker.orders import get_positions, get_orderbook, cancel_order, place_sl_o
 from strategy.fib_strategy import calculate_sl
 from utils.logger import log
 
+def get_latest_buy_trade(fyers, symbol):
+
+    trades = fyers.tradebook().get("tradeBook", [])
+    log(f"all orders {trades}")
+
+    # filter only this symbol
+    trades = [t for t in trades if t["symbol"] == symbol]
+    log(f"{symbol} orders {trades}")
+
+
+    # sort latest first
+    trades.sort(key=lambda x: x["tradeDateTime"], reverse=True)
+    log(f"{symbol} sorted by time orders {trades}")
+
+    for t in trades:
+        if t["side"] == 1:   # BUY
+            return float(t.get("tradedPrice", 0)), t.get("qty", 0)
+
+    return None, None
+
 
 def sync_engine(engine):
 
@@ -27,19 +47,22 @@ def sync_engine(engine):
     active_position = None
 
     for pos in positions:
+        print(pos)
         if pos["symbol"] == symbol and pos["qty"] != 0:
             active_position = pos
             break
 
     if active_position:
-        qty = abs(active_position["qty"])
-        entry_price = float(active_position.get("avgPrice", 0))
+        # qty = abs(active_position["qty"])
+        # entry_price = float(active_position.get("avgPrice", 0))
+        if active_position["qty"]>0:
+            entry_price, qty = get_latest_buy_trade(fyers, symbol)
 
-        log(f"{symbol} POSITION FOUND | Qty={qty} | Entry={entry_price}")
+            log(f"{symbol} POSITION FOUND | Qty={qty} | Entry={entry_price}")
 
-        sl_price = calculate_sl(entry_price)
+            sl_price = calculate_sl(entry_price)
 
-        state.set_active_trade(entry_price, sl_price, qty)
+            state.set_active_trade(entry_price, sl_price, qty)
 
     else:
         log(f"{symbol} NO ACTIVE POSITION")

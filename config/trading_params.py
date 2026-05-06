@@ -22,7 +22,7 @@ FIB_RATIOS = [
 # ENTRY & STOP LOSS
 # ==========================================
 if test_mode:
-    SL_POINTS = 2   # small SL for equity testing
+    SL_POINTS = 10   # small SL for equity testing
 else:
     SL_POINTS = 25  # real strategy value (options)
 

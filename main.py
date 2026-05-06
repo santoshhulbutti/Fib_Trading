@@ -34,7 +34,7 @@ def initialize_system():
 
     log("SYSTEM STARTING...")
     now = datetime.datetime.now()
-    print(f"SYSTEM STARTING... {now}")
+    print(f"initialize_system {now}")
 
     # AUTH
     access_token = get_access_token()
@@ -58,7 +58,7 @@ def initialize_system():
     # ======================================
     if test_mode:
 
-        eq_symbol = "NSE:HDFCBANK-EQ"
+        eq_symbol = "NSE:ADANIPORTS-EQ"
 
         eq_ohlc = get_prev_day_ohlc_for_symbol(fyers, eq_symbol)
         eq_levels = generate_fib_levels(eq_ohlc["high"], eq_ohlc["low"])
@@ -146,7 +146,7 @@ def run():
             symbol = msg.get("symbol")
             price = msg.get("ltp")
 
-            print(f"LTP {symbol} -> {price}")
+            # print(f"LTP {symbol} -> {price}")
 
             # ROUTE TO ENGINE
             for engine in engines:

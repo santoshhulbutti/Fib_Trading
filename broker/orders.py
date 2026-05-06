@@ -18,7 +18,7 @@ def place_stop_buy(fyers, symbol, qty, trigger_price):
             "side": 1,  # BUY
             "productType": "INTRADAY",
             "limitPrice": 0,
-            "stopPrice": trigger_price+SL_POINTS,
+            "stopPrice": trigger_price,
             "validity": "DAY"
         }
 
@@ -156,6 +156,7 @@ def get_positions(fyers):
 
     try:
         res = fyers.positions()
+        print(res)
         return res.get("netPositions", [])
 
     except Exception as e:
@@ -194,6 +195,7 @@ def get_orderbook(fyers):
 
     try:
         res = fyers.orderbook()
+        print(res)
         return res.get("orderBook", [])
 
     except Exception as e:

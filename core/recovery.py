@@ -75,17 +75,15 @@ def sync_engine(engine):
     sl_orders = []
 
     for o in orders:
-        if o["symbol"] != symbol:
-            continue
+        if o.get("symbol") == symbol and (o.get("status") == 6 or o.get("status") == 4):
+            if o.get("side") == 1:
+                entry_orders.append(o)
+            elif o.get("side") == -1:
+                sl_orders.append(o)
 
-        if o.get("status") != 1:
-            continue
 
-        if o["side"] == 1:
-            entry_orders.append(o)
-
-        elif o["side"] == -1:
-            sl_orders.append(o)
+    # print("Entry Orders", entry_orders)
+    # print("SL Orders", sl_orders)
 
     # --------------------------------------
     # STEP 3: HANDLE ENTRY ORDERS
@@ -95,12 +93,12 @@ def sync_engine(engine):
         # Keep latest, cancel others
         latest = entry_orders[-1]
 
-        state.entry_order_id = latest["id"]
+        state.entry_order_id = latest.get("id")
 
         log(f"{symbol} ENTRY ORDER RECOVERED")
 
         for o in entry_orders[:-1]:
-            cancel_order(fyers, o["id"])
+            cancel_order(fyers, o.get("id"))
             log(f"{symbol} CANCELLED STALE ENTRY ORDER")
 
     else:
@@ -116,7 +114,7 @@ def sync_engine(engine):
         if sl_orders:
 
             latest_sl = sl_orders[-1]
-            state.sl_order_id = latest_sl["id"]
+            state.sl_order_id = latest_sl.get("id")
 
             broker_sl = float(latest_sl.get("stopPrice", 0))
 
@@ -126,14 +124,14 @@ def sync_engine(engine):
             if abs(broker_sl - expected_sl) > 1:
                 log(f"{symbol} SL MISMATCH -> FIXING")
 
-                cancel_order(fyers, latest_sl["id"])
+                cancel_order(fyers, latest_sl.get("id"))
 
                 res = place_sl_order(fyers, symbol, state.qty, expected_sl)
                 state.sl_order_id = res.get("id")
 
             # cancel duplicates
             for o in sl_orders[:-1]:
-                cancel_order(fyers, o["id"])
+                cancel_order(fyers, o.get("id"))
 
         else:
             # CRITICAL: Missing SL → recreate
@@ -148,7 +146,7 @@ def sync_engine(engine):
     else:
         # no position → cancel all SL
         for o in sl_orders:
-            cancel_order(fyers, o["id"])
+            cancel_order(fyers, o.get("id"))
             log(f"{symbol} CANCELLED ORPHAN SL")
 
         state.sl_order_id = None
@@ -158,7 +156,7 @@ def sync_engine(engine):
     # --------------------------------------
     for o in orders:
 
-        if o["symbol"] != symbol:
+        if o.get("symbol") != symbol:
             continue
 
         filled = o.get("filledQty", 0)

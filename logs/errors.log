@@ -98,3 +98,5 @@
 [ERROR] 2026-05-04 10:15:29 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
 [ERROR] 2026-05-04 10:15:29 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
 [ERROR] 2026-05-04 10:15:30 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
+[ERROR] 2026-05-06 10:05:30 | NSE:ADANIPORTS-EQ RECOVERY FAILED: unsupported operand type(s) for |: 'str' and 'int'
+[ERROR] 2026-05-06 10:05:32 | NSE:ADANIPORTS-EQ RESYNC FAILED: unsupported operand type(s) for |: 'str' and 'int'

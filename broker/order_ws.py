@@ -49,7 +49,7 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     def on_trade(msg):
         print("TRADE WS RAW:", msg)
         try:
-            log(f"TRADE -> {msg.get('symbol')} | status={msg.get('status')}")
+            log(f"TRADE -> {msg.get('orders').get('symbol')} | status={msg.get('orders').get('status')}")
             order = msg.get("orders", {})
 
             # Route to engine
@@ -68,9 +68,9 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     def on_order(msg):
         print("ORDER WS RAW:", msg)
         try:
-            log(f"ORDER -> {msg.get('symbol')} | status={msg.get('status')}")
+            log(f"ORDER -> {msg.get('orders').get('symbol')} | status={msg.get('orders').get('status')}")
 
-            engine_router("ORDER", msg)
+            engine_router("ORDER", msg.get('orders'))
 
         except Exception as e:
             error_log(f"ORDER WS ERROR: {e}")

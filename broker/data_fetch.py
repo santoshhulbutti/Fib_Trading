@@ -120,7 +120,7 @@ def get_prev_day_ohlc_for_symbol(fyers, symbol):
     if len(candles) < 2:
         raise Exception(f"Not enough data for {symbol}")
 
-    prev = candles[-2]
+    prev = candles[-1]
 
     return {
         "open": prev[1],

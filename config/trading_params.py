@@ -45,7 +45,7 @@ if test_mode:
 else:
     # ---- REAL OPTIONS TRAILING ----
     TRAILING_RULES = {
-        100: 25,
+        100: 30,
         200: 50,
         400: 200,
         600: 400,

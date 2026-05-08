@@ -7,20 +7,20 @@ from config.settings import MARKET_START, MARKET_END, EOD_EXIT_TIME
 
 
 # ------------------------------------------
-# PARSE TIME STRING
+# PARSE TIME STRING   - not needed as of now
 # ------------------------------------------
-def _parse_time(time_str):
-    """
-    Converts 'HH:MM' → (hour, minute)
-    """
-    h, m = map(int, time_str.split(":"))
-    return h, m
+# def _parse_time(time_str):
+#     """
+#     Converts 'HH:MM' → (hour, minute)
+#     """
+#     h, m = map(int, time_str.split(":"))
+#     return h, m
 
 
 # ------------------------------------------
 # CURRENT TIME
 # ------------------------------------------
-def now():
+def current_time():
     return datetime.now().time()
 
 
@@ -28,15 +28,15 @@ def now():
 # CHECK MARKET OPEN
 # ------------------------------------------
 def is_market_open():
-    current = now()
+    current = current_time()
 
-    start_h, start_m = _parse_time(MARKET_START)
-    end_h, end_m = _parse_time(MARKET_END)
+    # start_h, start_m = _parse_time(MARKET_START)
+    # end_h, end_m = _parse_time(MARKET_END)
+    #
+    # start = current.replace(hour=start_h, minute=start_m, second=0)
+    # end = current.replace(hour=end_h, minute=end_m, second=0)
 
-    start = current.replace(hour=start_h, minute=start_m, second=0)
-    end = current.replace(hour=end_h, minute=end_m, second=0)
-
-    return start <= current <= end
+    return MARKET_START <= current <= MARKET_END
 
 
 # ------------------------------------------
@@ -50,7 +50,7 @@ def is_market_closed():
 # CHECK EOD EXIT TIME
 # ------------------------------------------
 def is_eod_exit_time():
-    current = now()
+    current = current_time()
 
     # eod_h, eod_m = _parse_time(EOD_EXIT_TIME)
     # eod = current.replace(hour=eod_h, minute=eod_m, second=0)
@@ -75,9 +75,9 @@ def wait_for_market_open():
 # TIME LEFT TO MARKET CLOSE
 # ------------------------------------------
 def time_to_market_close():
-    current = now()
+    current = current_time()
 
-    end_h, end_m = _parse_time(MARKET_END)
-    end = current.replace(hour=end_h, minute=end_m, second=0)
+    # end_h, end_m = _parse_time(MARKET_END)
+    end = current.replace(hour=15, minute=30, second=0)
 
     return (end - current).total_seconds()

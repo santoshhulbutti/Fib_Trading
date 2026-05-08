@@ -1,0 +1,131 @@
+"D:\Trade Automation\Fib_Trading\.venv\Scripts\python.exe" "D:\Trade Automation\Fib_Trading\main.py" 
+[INFO] 2026-05-05 09:13:10 | SYSTEM STARTING...
+SYSTEM STARTING... 2026-05-05 09:13:10.785054
+
+ Login URL:
+ https://api-t1.fyers.in/api/v3/generate-authcode?client_id=TIA57SU3G1-200&redirect_uri=https%3A%2F%2Fwww.google.com&response_type=code&state=None
+
+Enter Auth Code: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfaWQiOiJUSUE1N1NVM0cxIiwidXVpZCI6Ijc4MGU0M2MxNWM1ZDQwNjJhNjQyY2ViYTQ3MDk5Y2FkIiwiaXBBZGRyIjoiIiwibm9uY2UiOiIiLCJzY29wZSI6IiIsImRpc3BsYXlfbmFtZSI6IkZIMDM5OSIsIm9tcyI6IksxIiwiaHNtX2tleSI6IjIxNjhmMDBlYzBkMjEzYWJjNmI1YTU3NzE5ODkyMDdhNWQxYmRlOGU1ODg2MWVkZjViZTk3ZmZjIiwiaXNEZHBpRW5hYmxlZCI6IlkiLCJpc010ZkVuYWJsZWQiOiJOIiwiYXVkIjoiW1wiZDoxXCIsXCJkOjJcIixcIng6MFwiLFwieDoxXCIsXCJ4OjJcIl0iLCJleHAiOjE3Nzc5ODI1OTgsImlhdCI6MTc3Nzk1MjU5OCwiaXNzIjoiYXBpLmxvZ2luLmZ5ZXJzLmluIiwibmJmIjoxNzc3OTUyNTk4LCJzdWIiOiJhdXRoX2NvZGUifQ.sLIgxXUCXesHRx2wlXMKwJARYMKApPI-ejTxKAoebQE
+Authentication Successful
+[INFO] 2026-05-05 09:13:29 | AUTH SUCCESS
+[['28-04-2026', 1628.4, 1648.0, 1624.5, 1637.6, 2500914], ['29-04-2026', 1645.0, 1672.0, 1644.9, 1661.1, 2345365], ['30-04-2026', 1650.0, 1677.0, 1596.8, 1657.3, 6313698], ['04-05-2026', 1702.0, 1748.6, 1687.3, 1742.6, 7171346]]
+[1337.25, 1386.85, 1467.05, 1547.25, 1596.8, 1627.45, 1636.9, 1646.35, 1677.0, 1726.55, 1757.2, 1806.75, 1886.95, 1967.15, 2016.75]
+[INFO] 2026-05-05 09:13:29 | engine instance initializing complete
+[INFO] 2026-05-05 09:13:29 | NSE:ADANIPORTS-EQ RECOVERY START
+[INFO] 2026-05-05 09:13:29 | NSE:ADANIPORTS-EQ NO ACTIVE POSITION
+[INFO] 2026-05-05 09:13:29 | NSE:ADANIPORTS-EQ RECOVERY ENGINE COMPLETE
+[INFO] 2026-05-05 09:13:29 | INITIAL RECOVERY COMPLETE
+[INFO] 2026-05-05 09:13:29 | STARTING WEBSOCKETS...
+[INFO] 2026-05-05 09:13:31 | WebSocket Connected
+[INFO] 2026-05-05 09:13:31 | ORDER WS CONNECTED
+[INFO] 2026-05-05 09:13:31 | WS RECONNECTED -> TRIGGERING FULL RESYNC
+[INFO] 2026-05-05 09:13:31 | RECONNECT RESYNC START
+[INFO] 2026-05-05 09:13:31 | NSE:ADANIPORTS-EQ RECOVERY START
+[INFO] 2026-05-05 09:13:31 | GENERAL UPDATE -> {'code': 1605, 'message': 'Successfully subscribed', 's': 'ok'}
+[INFO] 2026-05-05 09:13:31 | NSE:ADANIPORTS-EQ NO ACTIVE POSITION
+[INFO] 2026-05-05 09:13:31 | NSE:ADANIPORTS-EQ RECOVERY ENGINE COMPLETE
+[INFO] 2026-05-05 09:13:31 | RECONNECT RESYNC COMPLETE
+[INFO] 2026-05-05 09:13:31 | RESYNC COMPLETE
+LTP NSE:ADANIPORTS-EQ -> 1749.8
+LTP NSE:ADANIPORTS-EQ -> 1747.1
+LTP NSE:ADANIPORTS-EQ -> 1751.4
+LTP NSE:ADANIPORTS-EQ -> 1756.0
+LTP NSE:ADANIPORTS-EQ -> 1756.3
+LTP NSE:ADANIPORTS-EQ -> 1755.3
+LTP NSE:ADANIPORTS-EQ -> 1755.2
+[INFO] 2026-05-05 09:16:15 | NSE:ADANIPORTS-EQ STOP BUY ORDER -> {'code': 1101, 'message': 'Successfully placed order', 's': 'ok', 'id_fyers': '9302ef09-9eeb-4657-96b0-d86021512ab6', 'id': '26050500009741'}
+[INFO] 2026-05-05 09:16:15 | NSE:ADANIPORTS-EQ FIRST LONG ORDER PLACED @ 1757.2
+[INFO] 2026-05-05 09:16:15 | ORDER -> None | status=None
+[INFO] 2026-05-05 09:16:15 | ORDER -> None | status=None
+[INFO] 2026-05-05 09:16:15 | ORDER -> None | status=None
+LTP NSE:ADANIPORTS-EQ -> 1756.8
+LTP NSE:ADANIPORTS-EQ -> 1756.3
+LTP NSE:ADANIPORTS-EQ -> 1755.2
+LTP NSE:ADANIPORTS-EQ -> 1757.0
+LTP NSE:ADANIPORTS-EQ -> 1756.4
+LTP NSE:ADANIPORTS-EQ -> 1757.0
+[INFO] 2026-05-05 09:16:21 | ORDER -> None | status=None
+[INFO] 2026-05-05 09:16:21 | ORDER -> None | status=None
+[INFO] 2026-05-05 09:16:21 | TRADE -> None | status=None
+LTP NSE:ADANIPORTS-EQ -> 1757.0
+LTP NSE:ADANIPORTS-EQ -> 1757.0
+[INFO] 2026-05-05 09:16:22 | POSITION -> None | qty=None
+LTP NSE:ADANIPORTS-EQ -> 1756.1
+LTP NSE:ADANIPORTS-EQ -> 1757.1
+LTP NSE:ADANIPORTS-EQ -> 1756.5
+LTP NSE:ADANIPORTS-EQ -> 1751.6
+LTP NSE:ADANIPORTS-EQ -> 1724.7
+LTP NSE:ADANIPORTS-EQ -> 1724.7
+LTP NSE:ADANIPORTS-EQ -> 1724.8
+Traceback (most recent call last):
+  File "D:\Trade Automation\Fib_Trading\main.py", line 221, in <module>
+    run()
+  File "D:\Trade Automation\Fib_Trading\main.py", line 214, in run
+    time.sleep(1)
+KeyboardInterrupt
+LTP NSE:ADANIPORTS-EQ -> 1725.0
+LTP NSE:ADANIPORTS-EQ -> 1725.0
+LTP NSE:ADANIPORTS-EQ -> 1726.0
+LTP NSE:ADANIPORTS-EQ -> 1726.9
+LTP NSE:ADANIPORTS-EQ -> 1727.0
+
+Process finished with exit code -1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"D:\Trade Automation\Fib_Trading\.venv\Scripts\python.exe" "D:\Trade Automation\Fib_Trading\main.py" 
+[INFO] 2026-05-05 10:09:05 | SYSTEM STARTING...
+initialize_system 2026-05-05 10:09:05.716828
+
+ Login URL:
+ https://api-t1.fyers.in/api/v3/generate-authcode?client_id=TIA57SU3G1-200&redirect_uri=https%3A%2F%2Fwww.google.com&response_type=code&state=None
+
+Enter Auth Code: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfaWQiOiJUSUE1N1NVM0cxIiwidXVpZCI6Ijc0OGRkZWMwMzYzOTQyMGZhMjRmZGY1ZDUzYjMzNTk5IiwiaXBBZGRyIjoiIiwibm9uY2UiOiIiLCJzY29wZSI6IiIsImRpc3BsYXlfbmFtZSI6IkZIMDM5OSIsIm9tcyI6IksxIiwiaHNtX2tleSI6IjIxNjhmMDBlYzBkMjEzYWJjNmI1YTU3NzE5ODkyMDdhNWQxYmRlOGU1ODg2MWVkZjViZTk3ZmZjIiwiaXNEZHBpRW5hYmxlZCI6IlkiLCJpc010ZkVuYWJsZWQiOiJOIiwiYXVkIjoiW1wiZDoxXCIsXCJkOjJcIixcIng6MFwiLFwieDoxXCIsXCJ4OjJcIl0iLCJleHAiOjE3Nzc5ODU5NTMsImlhdCI6MTc3Nzk1NTk1MywiaXNzIjoiYXBpLmxvZ2luLmZ5ZXJzLmluIiwibmJmIjoxNzc3OTU1OTUzLCJzdWIiOiJhdXRoX2NvZGUifQ.ZPPw1tPNArqfBzqzPRca4g0BRnoP2eST177do785V9A
+Authentication Successful
+[INFO] 2026-05-05 10:09:25 | AUTH SUCCESS
+[['28-04-2026', 1628.4, 1648.0, 1624.5, 1637.6, 2500914], ['29-04-2026', 1645.0, 1672.0, 1644.9, 1661.1, 2345365], ['30-04-2026', 1650.0, 1677.0, 1596.8, 1657.3, 6313698], ['04-05-2026', 1702.0, 1748.6, 1687.3, 1742.6, 7171346], ['05-05-2026', 1749.8, 1757.4, 1719.0, 1738.7, 1688574]]
+[1488.95, 1526.8, 1588.1, 1649.4, 1687.3, 1710.7, 1717.95, 1725.2, 1748.6, 1786.5, 1809.9, 1847.8, 1909.1, 1970.4, 2008.25]
+[INFO] 2026-05-05 10:09:25 | engine instance initializing complete
+[INFO] 2026-05-05 10:09:25 | NSE:ADANIPORTS-EQ RECOVERY START
+{'symbol': 'NSE:ADANIPORTS-EQ', 'id': 'NSE:ADANIPORTS-EQ-INTRADAY', 'buyAvg': 1753, 'buyQty': 2, 'buyVal': 3506, 'sellAvg': 1721.5, 'sellQty': 1, 'sellVal': 1721.5, 'netAvg': 1753, 'netQty': 1, 'side': 1, 'qty': 1, 'productType': 'INTRADAY', 'realized_profit': -31.5, 'crossCurrency': '', 'rbiRefRate': 1, 'fyToken': '101000000015083', 'exchange': 10, 'segment': 10, 'dayBuyQty': 2, 'daySellQty': 1, 'cfBuyQty': 0, 'cfSellQty': 0, 'qtyMulti_com': 1, 'pl': -45.799999999999955, 'unrealized_profit': -14.299999999999955, 'ltp': 1738.7, 'slNo': 0}
+[INFO] 2026-05-05 10:09:25 | NSE:ADANIPORTS-EQ POSITION FOUND | Qty=1 | Entry=0.0
+[INFO] 2026-05-05 10:09:25 | NSE:ADANIPORTS-EQ NO SL FOUND -> RECREATING
+[INFO] 2026-05-05 10:09:25 | NSE:ADANIPORTS-EQ SL ORDER -> {'code': -50, 'message': 'limitPrice does not match: 0', 's': 'error'}
+[INFO] 2026-05-05 10:09:25 | NSE:ADANIPORTS-EQ NEW SL PLACED @ -15.0
+[INFO] 2026-05-05 10:09:25 | NSE:ADANIPORTS-EQ RECOVERY ENGINE COMPLETE
+[INFO] 2026-05-05 10:09:25 | INITIAL RECOVERY COMPLETE
+[INFO] 2026-05-05 10:09:25 | STARTING WEBSOCKETS...
+[INFO] 2026-05-05 10:09:27 | WebSocket Connected[INFO] 2026-05-05 10:09:27 | ORDER WS CONNECTED
+
+[INFO] 2026-05-05 10:09:27 | WS RECONNECTED -> TRIGGERING FULL RESYNC
+[INFO] 2026-05-05 10:09:27 | RECONNECT RESYNC START
+[INFO] 2026-05-05 10:09:27 | NSE:ADANIPORTS-EQ RECOVERY START
+[INFO] 2026-05-05 10:09:27 | GENERAL UPDATE -> {'code': 1605, 'message': 'Successfully subscribed', 's': 'ok'}
+{'symbol': 'NSE:ADANIPORTS-EQ', 'id': 'NSE:ADANIPORTS-EQ-INTRADAY', 'buyAvg': 1753, 'buyQty': 2, 'buyVal': 3506, 'sellAvg': 1721.5, 'sellQty': 1, 'sellVal': 1721.5, 'netAvg': 1753, 'netQty': 1, 'side': 1, 'qty': 1, 'productType': 'INTRADAY', 'realized_profit': -31.5, 'crossCurrency': '', 'rbiRefRate': 1, 'fyToken': '101000000015083', 'exchange': 10, 'segment': 10, 'dayBuyQty': 2, 'daySellQty': 1, 'cfBuyQty': 0, 'cfSellQty': 0, 'qtyMulti_com': 1, 'pl': -44.700000000000045, 'unrealized_profit': -13.200000000000045, 'ltp': 1739.8, 'slNo': 0}
+[INFO] 2026-05-05 10:09:27 | NSE:ADANIPORTS-EQ POSITION FOUND | Qty=1 | Entry=0.0
+[INFO] 2026-05-05 10:09:27 | NSE:ADANIPORTS-EQ NO SL FOUND -> RECREATING
+[INFO] 2026-05-05 10:09:27 | NSE:ADANIPORTS-EQ SL ORDER -> {'code': -50, 'message': 'limitPrice does not match: 0', 's': 'error'}
+[INFO] 2026-05-05 10:09:27 | NSE:ADANIPORTS-EQ NEW SL PLACED @ -15.0
+[INFO] 2026-05-05 10:09:27 | NSE:ADANIPORTS-EQ RECOVERY ENGINE COMPLETE
+[INFO] 2026-05-05 10:09:27 | RECONNECT RESYNC COMPLETE
+[INFO] 2026-05-05 10:09:27 | RESYNC COMPLETE
+Traceback (most recent call last):
+  File "D:\Trade Automation\Fib_Trading\main.py", line 221, in <module>
+    run()
+  File "D:\Trade Automation\Fib_Trading\main.py", line 214, in run
+    time.sleep(1)
+KeyboardInterrupt
+
+Process finished with exit code -1
+

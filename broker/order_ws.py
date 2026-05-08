@@ -81,9 +81,9 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     def on_position(msg):
         print("POSITIONS WS RAW:", msg)
         try:
-            log(f"POSITION -> {msg.get('symbol')} | qty={msg.get('qty')}")
+            log(f"POSITION -> {msg.get('positions').get('symbol')} | qty={msg.get('positions').get('qty')}")
 
-            engine_router("POSITION", msg)
+            engine_router("POSITION", msg.get('positions'))
 
         except Exception as e:
             error_log(f"POSITION WS ERROR: {e}")

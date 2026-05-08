@@ -100,3 +100,6 @@
 [ERROR] 2026-05-04 10:15:30 | MAIN ERROR: '>=' not supported between instances of 'function' and 'datetime.time'
 [ERROR] 2026-05-06 10:05:30 | NSE:ADANIPORTS-EQ RECOVERY FAILED: unsupported operand type(s) for |: 'str' and 'int'
 [ERROR] 2026-05-06 10:05:32 | NSE:ADANIPORTS-EQ RESYNC FAILED: unsupported operand type(s) for |: 'str' and 'int'
+[ERROR] 2026-05-08 09:16:44 | TRADE WS ERROR: 'NoneType' object has no attribute 'get'
+[ERROR] 2026-05-08 09:40:48 | NSE:ADANIPORTS-EQ RECOVERY FAILED: 'tradeDateTime'
+[ERROR] 2026-05-08 09:40:50 | NSE:ADANIPORTS-EQ RESYNC FAILED: 'tradeDateTime'

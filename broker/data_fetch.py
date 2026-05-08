@@ -72,6 +72,8 @@ def get_last_trading_day(today):
 
 def get_prev_day_ohlc_for_symbol(fyers, symbol):
     from datetime import datetime, date, timedelta
+    from config.symbols import is_trading_day  # reuse existing logic
+    from utils.time_utils import is_market_open
 
     today = date.today()
     to_date = get_last_trading_day(today)
@@ -120,11 +122,36 @@ def get_prev_day_ohlc_for_symbol(fyers, symbol):
     if len(candles) < 2:
         raise Exception(f"Not enough data for {symbol}")
 
-    prev = candles[-1]
+    if is_trading_day(today):
+        if is_market_open():
+            prev = candles[-2]
+            print(prev)
 
-    return {
-        "open": prev[1],
-        "high": prev[2],
-        "low": prev[3],
-        "close": prev[4]
-    }
+            return {
+                "open": prev[1],
+                "high": prev[2],
+                "low": prev[3],
+                "close": prev[4]
+            }
+
+        else:
+            prev = candles[-1]
+            print(prev)
+
+            return {
+                "open": prev[1],
+                "high": prev[2],
+                "low": prev[3],
+                "close": prev[4]
+            }
+
+    else:
+        prev = candles[-1]
+        print(prev)
+
+        return {
+            "open": prev[1],
+            "high": prev[2],
+            "low": prev[3],
+            "close": prev[4]
+        }

@@ -201,6 +201,59 @@ class Engine:
     def handle_order_update(self, msg):
         log(f"{self.symbol} HANDLE ORDER EVENT: {msg}")
 
+        # ----------------------------------
+        # FILLED ORDER
+        # ----------------------------------
+        if msg.get("status") == 2:
+
+            # Avoid duplicate processing
+            if self.state.active_trade:
+                return
+
+            fill_price = float(
+                msg.get("tradedPrice")
+                or msg.get("avgPrice")
+                or 0
+            )
+
+            qty = int(
+                # msg.get("filledQty") or
+                msg.get("qty") or 0
+            )
+
+            if fill_price <= 0 or qty <= 0:
+                log(f"{self.symbol} INVALID FILL DATA")
+                return
+
+            log(f"{self.symbol} ORDER FILLED @ {fill_price}")
+
+            # ----------------------------------
+            # ACTIVATE TRADE
+            # ----------------------------------
+            sl_price = calculate_sl(fill_price)
+
+            self.state.set_active_trade(fill_price, sl_price, qty)
+
+            self.state.entry_order_id = None
+            self.state.first_trade_done = True
+
+            # ----------------------------------
+            # PLACE SL
+            # ----------------------------------
+            sl_res = place_sl_order(
+                self.fyers,
+                self.symbol,
+                qty,
+                sl_price
+            )
+
+            print("SL order placed, ORDER RAW DATA", sl_res)
+
+            self.state.sl_order_id = sl_res.get("orders").get("id")
+
+            log(f"{self.symbol} SL PLACED @ {sl_price}")
+
+
     # --------------------------------------
     # POSITION UPDATE (CRITICAL FOR SYNC)
     # --------------------------------------

@@ -27,7 +27,7 @@ def log(message):
     """
     General system log
     """
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S:%f")
     msg = f"[INFO] {timestamp} | {message}"
 
     print(msg)
@@ -38,7 +38,7 @@ def trade_log(message):
     """
     Trade-specific log
     """
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S:%f")
     msg = f"[TRADE] {timestamp} | {message}"
 
     print(msg)
@@ -49,7 +49,7 @@ def error_log(message):
     """
     Error logging
     """
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S:%f")
     msg = f"[ERROR] {timestamp} | {message}"
 
     print(msg)

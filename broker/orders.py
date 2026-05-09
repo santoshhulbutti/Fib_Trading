@@ -23,6 +23,8 @@ def place_stop_buy(fyers, symbol, qty, trigger_price):
         }
 
         res = fyers.place_order(data)
+
+        # NEED TO VERIFY ORDER SUCCESS OR NOT THEN LOG THE RESPONSE
         log(f"{symbol} STOP BUY ORDER -> {res}")
         return res
 
@@ -156,7 +158,6 @@ def get_positions(fyers):
 
     try:
         res = fyers.positions()
-        print(res)
         return res.get("netPositions", [])
 
     except Exception as e:
@@ -195,7 +196,6 @@ def get_orderbook(fyers):
 
     try:
         res = fyers.orderbook()
-        print(res)
         return res.get("orderBook", [])
 
     except Exception as e:

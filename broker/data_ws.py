@@ -12,7 +12,7 @@ def start_ws(access_token, symbols, on_message):
     # CALLBACKS
     # --------------------------------------
     def on_connect():
-        log("WebSocket Connected")
+        log("DATA WEB SOCKET CONNECTED")
 
         # Subscribe to symbols
         fyers.subscribe(
@@ -22,10 +22,10 @@ def start_ws(access_token, symbols, on_message):
         fyers.keep_running()
 
     def on_close(message):
-        log(f"WebSocket Closed: {message}")
+        log(f"DATA WEB SOCKET CLOSED: {message}")
 
     def on_error(message):
-        log(f"WebSocket Error: {message}")
+        log(f"DATA WEB SOCKET ERROR: {message}")
 
     def onmessage(msg):
         on_message(msg)

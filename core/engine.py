@@ -153,31 +153,31 @@ class Engine:
         log(f"{self.symbol} HANDLE TRADE EVENT: {msg}")
 
         try:
-            if msg.get("symbol") != self.symbol:
-                print("handle_trade_update - Symbol mismatch")
+            if msg.get('trades').get("symbol") != self.symbol:
+                log("handle_trade_update - Symbol mismatch")
                 return
 
-            filled_qty = msg.get("filledQty", 0)
-            status = msg.get("status")
+            filled_qty = msg.get('trades').get("tradedQty", 0)
+            status = msg.get("s")
 
             # Partial fill (status != 2)
-            if filled_qty > 0 and status != 2:
-                log(f"{self.symbol} PARTIAL FILL -> {filled_qty}")
+            if filled_qty > 0 and status != "ok":
+                log(f"{self.symbol} PARTIAL FILL -> {filled_qty} OR TRADE ERROR. CHECK LOG.")
                 return
 
             # Only process FILLED trades
-            if status != 2:
+            if status != "ok":
                 return
 
             # fill_price = float(msg.get("avgPrice", 0))
-            fill_price = float(msg.get("tradedPrice") or msg.get("avgPrice") or 0)
-            filled_qty = msg.get("filledQty", 0)
+            fill_price = float(msg.get('trades').get("tradePrice") or 0)
+            filled_qty = msg.get('trades').get("tradedQty", 0)
 
             if fill_price == 0 or filled_qty == 0:
                 log(f"{self.symbol} INVALID TRADE DATA -> {msg}")
                 return
 
-            log(f"{self.symbol} TRADE FILLED @ {fill_price}")
+            log(f"{self.symbol} TRADE FILLED @ {fill_price} FOR QTY: {filled_qty}")
 
             # Activate trade
             sl_price = calculate_sl(fill_price)
@@ -188,6 +188,7 @@ class Engine:
 
             # Place SL immediately
             sl_res = place_sl_order(self.fyers, self.symbol, filled_qty, sl_price)
+            log(f"SL ORDER RESPONSE : {sl_res}")
             self.state.sl_order_id = sl_res.get("id")
 
             log(f"{self.symbol} SL PLACED @ {sl_price}")
@@ -204,54 +205,54 @@ class Engine:
         # ----------------------------------
         # FILLED ORDER
         # ----------------------------------
-        if msg.get("status") == 2:
-
-            # Avoid duplicate processing
-            if self.state.active_trade:
-                return
-
-            fill_price = float(
-                msg.get("tradedPrice")
-                or msg.get("avgPrice")
-                or 0
-            )
-
-            qty = int(
-                # msg.get("filledQty") or
-                msg.get("qty") or 0
-            )
-
-            if fill_price <= 0 or qty <= 0:
-                log(f"{self.symbol} INVALID FILL DATA")
-                return
-
-            log(f"{self.symbol} ORDER FILLED @ {fill_price}")
-
-            # ----------------------------------
-            # ACTIVATE TRADE
-            # ----------------------------------
-            sl_price = calculate_sl(fill_price)
-
-            self.state.set_active_trade(fill_price, sl_price, qty)
-
-            self.state.entry_order_id = None
-            self.state.first_trade_done = True
-
-            # ----------------------------------
-            # PLACE SL
-            # ----------------------------------
-            sl_res = place_sl_order(
-                self.fyers,
-                self.symbol,
-                qty,
-                sl_price
-            )
-
-            print("SL order placed, ORDER RAW DATA", sl_res)
-
-            self.state.sl_order_id = sl_res.get("orders").get("id")
-
-            log(f"{self.symbol} SL PLACED @ {sl_price}")
+        # if msg.get("status") == 2:
+        #
+        #     # Avoid duplicate processing
+        #     if self.state.active_trade:
+        #         return
+        #
+        #     fill_price = float(
+        #         msg.get("tradedPrice")
+        #         # or msg.get("avgPrice")
+        #         or 0
+        #     )
+        #
+        #     qty = int(
+        #         msg.get("filledQty") or
+        #         msg.get("qty") or 0
+        #     )
+        #
+        #     if fill_price <= 0 or qty <= 0:
+        #         log(f"{self.symbol} INVALID FILL DATA")
+        #         return
+        #
+        #     log(f"{self.symbol} ORDER FILLED @ {fill_price}")
+        #
+        #     # ----------------------------------
+        #     # ACTIVATE TRADE
+        #     # ----------------------------------
+        #     sl_price = calculate_sl(fill_price)
+        #
+        #     self.state.set_active_trade(fill_price, sl_price, qty)
+        #
+        #     self.state.entry_order_id = None
+        #     self.state.first_trade_done = True
+        #
+        #     # ----------------------------------
+        #     # PLACE SL
+        #     # ----------------------------------
+        #     sl_res = place_sl_order(
+        #         self.fyers,
+        #         self.symbol,
+        #         qty,
+        #         sl_price
+        #     )
+        #
+        #     log(f"SL ORDER PLACED, ORDER RAW DATA: {sl_res}")
+        #
+        #     self.state.sl_order_id = sl_res.get("orders").get("id")
+        #
+        #     log(f"{self.symbol} SL PLACED @ {sl_price} WITH ORDER ID :{self.state.sl_order_id}")
 
 
     # --------------------------------------

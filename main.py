@@ -33,8 +33,6 @@ import time
 def initialize_system():
 
     log("SYSTEM STARTING...")
-    now = datetime.datetime.now()
-    print(f"initialize_system {now}")
 
     # AUTH
     access_token = get_access_token()
@@ -45,7 +43,7 @@ def initialize_system():
         log_path=""
     )
 
-    log("AUTH SUCCESS")
+    log("FYERS MODEL CREATED...")
 
     # ======================================
     # 🔴 SWITCH MODE HERE
@@ -60,10 +58,12 @@ def initialize_system():
 
         eq_symbol = "NSE:ADANIPORTS-EQ"
 
+        # for sym in eq_symbol: # Need to check for list of eq symbols & how to create multiple Engine instances.
         eq_ohlc = get_prev_day_ohlc_for_symbol(fyers, eq_symbol)
         eq_levels = generate_fib_levels(eq_ohlc["high"], eq_ohlc["low"])
+        log(f"Yesterday's OHLC for {eq_symbol} : {eq_ohlc}")
+        log(f"Fib levels for {eq_symbol} : {eq_levels}")
 
-        print(eq_levels)
 
         eq_engine = Engine(fyers, eq_symbol, eq_levels)
 
@@ -75,6 +75,7 @@ def initialize_system():
     else:
 
         index_ohlc = get_prev_day_ohlc_for_symbol(fyers, "BSE:SENSEX-INDEX")
+        log(f"Yesterday's OHLC for BSE:SENSEX-INDEX : {index_ohlc}")
         prev_close = index_ohlc["close"]
 
         symbols = get_option_symbols(prev_close)
@@ -89,6 +90,9 @@ def initialize_system():
         call_levels = generate_fib_levels(call_ohlc["high"], call_ohlc["low"])
         put_levels = generate_fib_levels(put_ohlc["high"], put_ohlc["low"])
 
+        log(f"Fib levels for {call_symbol} : {call_levels}")
+        log(f"Fib levels for {put_symbol} : {put_levels}")
+
         call_engine = Engine(fyers, call_symbol, call_levels)
         put_engine = Engine(fyers, put_symbol, put_levels)
 
@@ -102,7 +106,7 @@ def run():
 
     fyers, engines, symbols = initialize_system()
 
-    log("engine instance initializing complete")
+    log("ENGINE INSTANCE CREATION COMPLETE...")
 
     # --------------------------------------
     # RECOVERY SYNC

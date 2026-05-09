@@ -4,6 +4,7 @@
 
 from fyers_apiv3 import fyersModel
 import os
+from utils.logger import log, error_log
 from config.settings import CLIENT_ID, SECRET_KEY, REDIRECT_URI
 
 
@@ -11,6 +12,8 @@ def get_access_token():
     """
     Manual login flow (recommended initially)
     """
+
+    log("AUTHENTICATION STARTED...")
 
     session = fyersModel.SessionModel(
         client_id=CLIENT_ID,
@@ -22,18 +25,20 @@ def get_access_token():
 
     # Step 1: Generate login URL
     auth_url = session.generate_authcode()
-    print("\n Login URL:\n", auth_url)
+    print("\n LOGIN URL:\n", auth_url)
 
     # Step 2: Paste auth code
-    auth_code = input("\nEnter Auth Code: ")
+    auth_code = input("\nENTER AUTHENTICATION CODE: ")
 
     # Step 3: Generate token
     session.set_token(auth_code)
     response = session.generate_token()
 
     if "access_token" not in response:
-        raise Exception(f"Auth Failed: {response}")
+        error_log("AUTHENTICATION FAILED")
+        raise Exception(f"AUTHENTICATION FAILED...: {response}")
 
-    print("Authentication Successful")
+
+    log("AUTHENTICATION SUCCESSFUL...")
     # os.environ["FYERS_ACCESS_TOKEN"] = response["access_token"]
     return response["access_token"]

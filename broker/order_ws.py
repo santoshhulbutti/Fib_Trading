@@ -29,12 +29,12 @@ def start_order_ws(access_token, engine_router, on_reconnect):
 
             # Prevent duplicate resync calls
             if now - last_resync_time["ts"] < RESYNC_COOLDOWN:
-                log("RESYNC SKIPPED (cooldown)")
+                log("RESYNC SKIPPED (COOLDOWN)")
                 return
 
             last_resync_time["ts"] = now
 
-            log("WS RECONNECTED -> TRIGGERING FULL RESYNC")
+            log("ORDER WEB SOCKET RECONNECTED -> TRIGGERING FULL RESYNC")
 
             on_reconnect()
 
@@ -47,17 +47,17 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # TRADE UPDATE (MOST IMPORTANT)
     # --------------------------------------
     def on_trade(msg):
-        print("TRADE WS RAW:", msg)
+        log(f"TRADE WEB SOCKET RAW MESSAGE:{msg}")
         try:
-            log(f"TRADE -> {msg.get('orders').get('symbol')} | status={msg.get('orders').get('status')}")
-            order = msg.get("orders", {})
+            log(f"TRADE -> {msg.get('trades').get('symbol')} | status={msg.get('s')}")
+            order = msg.get("trades", {})
 
             # Route to engine
             if not order:
                 return
 
-            engine_router("TRADE", order)
-            # engine_router("TRADE", msg)
+            # engine_router("TRADE", order)
+            engine_router("TRADE", msg)
 
         except Exception as e:
             error_log(f"TRADE WS ERROR: {e}")
@@ -66,7 +66,7 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # ORDER UPDATE (SECONDARY)
     # --------------------------------------
     def on_order(msg):
-        print("ORDER WS RAW:", msg)
+        log(f"ORDER WEB SOCKET RAW MESSAGE:{msg}")
         try:
             log(f"ORDER -> {msg.get('orders').get('symbol')} | status={msg.get('orders').get('status')}")
 
@@ -79,7 +79,7 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # POSITION UPDATE (OPTIONAL)
     # --------------------------------------
     def on_position(msg):
-        print("POSITIONS WS RAW:", msg)
+        log(f"POSITIONS WEB SOCKET RAW MESSAGE:{msg}")
         try:
             log(f"POSITION -> {msg.get('positions').get('symbol')} | qty={msg.get('positions').get('qty')}")
 
@@ -92,19 +92,20 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # GENERAL EVENTS (OPTIONAL)
     # --------------------------------------
     def on_general(msg):
-        log(f"GENERAL UPDATE -> {msg}")
+        log(f"GENERAL UPDATE MESSAGE -> {msg}")
 
     # --------------------------------------
     # CONNECT CALLBACK
     # --------------------------------------
     def on_connect():
         try:
-            log("ORDER WS CONNECTED")
 
             # Subscribe to all streams
             fyers.subscribe(
                 data_type="OnOrders,OnTrades,OnPositions,OnGeneral"
             )
+
+            log("ORDER WEB SOCKET CONNECTED")
 
             # CRITICAL: RESYNC STATE
             trigger_resync()
@@ -113,16 +114,16 @@ def start_order_ws(access_token, engine_router, on_reconnect):
             fyers.keep_running()
 
         except Exception as e:
-            error_log(f"CONNECT ERROR: {e}")
+            error_log(f"ORDER WEB SOCKET CONNECT ERROR: {e}")
 
     # --------------------------------------
     # ERROR HANDLING
     # --------------------------------------
     def on_error(msg):
-        error_log(f"ORDER WS ERROR: {msg}")
+        error_log(f"ORDER WEB SOCKET ERROR: {msg}")
 
     def on_close(msg):
-        log(f"ORDER WS CLOSED: {msg}")
+        log(f"ORDER WEB SOCKET CLOSED: {msg}")
 
     # --------------------------------------
     # SOCKET INIT

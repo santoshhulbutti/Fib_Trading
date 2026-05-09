@@ -4,7 +4,9 @@
 
 from broker.orders import get_positions, get_orderbook, cancel_order, place_sl_order
 from strategy.fib_strategy import calculate_sl
-from utils.logger import log
+from utils.logger import log, error_log
+from utils.state_logger import log_state
+
 
 from datetime import datetime
 
@@ -13,15 +15,15 @@ fmt = "%d-%b-%Y %H:%M:%S"
 def get_latest_buy_trade(fyers, symbol):
 
     trades = fyers.tradebook().get("tradeBook", [])
-    log(f"all orders {trades}")
+    log(f"ALL ORDERS: {trades}")
 
     # filter only this symbol
     trades = [t for t in trades if t.get("symbol") == symbol]
-    log(f"{symbol} orders {trades}")
+    log(f"{symbol} ORDERS: {trades}")
 
     # sort latest first
     trades.sort(key=lambda x: datetime.strptime(x.get("orderDateTime"), fmt), reverse=True)
-    log(f"{symbol} sorted by time orders {trades}")
+    log(f"{symbol} SORTED BY TIME (LATEST FIRST): {trades}")
 
     for t in trades:
         if t.get("side") == 1:   # BUY
@@ -68,10 +70,18 @@ def sync_engine(engine):
             sl_price = calculate_sl(entry_price)
 
             state.set_active_trade(entry_price, sl_price, qty)
+            try:
+                log_state(state, "RECOVERY - OPEN POSITION STATE")
+            except Exception as e:
+                error_log(f"RECOVERY - OPEN POSITION STATE: LOGGING FAILED: {e}")
 
     else:
         log(f"{symbol} NO ACTIVE POSITION")
         state.reset_trade()
+        try:
+            log_state(state, "RECOVERY - NO ACTIVE POSITION - RESET")
+        except Exception as e:
+            error_log(f"RECOVERY - NO ACTIVE POSITION RESET: LOGGING FAILED: {e}")
 
     # --------------------------------------
     # STEP 2: ORDER CLASSIFICATION
@@ -96,8 +106,15 @@ def sync_engine(engine):
         latest = entry_orders[-1]
 
         state.entry_order_id = latest.get("id")
+        if state.entry_order_id:
+            log(f"{symbol} ✓ ENTRY ORDER RECOVERED")
+            try:
+                log_state(state, "RECOVERY - ENTRY ORDER FOUND")
+            except Exception as e:
+                error_log(f"RECOVERY - ENTRY ORDER FOUND: LOGGING FAILED: {e}")
 
-        log(f"{symbol} ENTRY ORDER RECOVERED")
+        else:
+            log(f"{symbol} X ENTRY ORDER ID FETCHING PROBLEM")
 
         for o in entry_orders[:-1]:
             cancel_order(fyers, o.get("id"))
@@ -105,6 +122,11 @@ def sync_engine(engine):
 
     else:
         state.entry_order_id = None
+        try:
+            log_state(state, "RECOVERY - ENTRY ORDER NOT FOUND")
+        except Exception as e:
+            error_log(f"RECOVERY - ENTRY ORDER NOT FOUND: LOGGING FAILED: {e}")
+
 
     # --------------------------------------
     # STEP 4: HANDLE SL ORDERS
@@ -129,7 +151,14 @@ def sync_engine(engine):
                 cancel_order(fyers, latest_sl.get("id"))
 
                 res = place_sl_order(fyers, symbol, state.qty, expected_sl)
-                state.sl_order_id = res.get("id")
+
+                if res.get("s") == "ok":
+                    state.sl_order_id = res.get("id")
+                    log(f"{symbol} SL ORDER PLACED SUCCESSFULLY @ {expected_sl}")
+                    try:
+                        log_state(state, "RECOVERY - SL ORDER PLACED")
+                    except Exception as e:
+                        error_log(f"RECOVERY - SL ORDER PLACED: LOGGING FAILED: {e}")
 
             # cancel duplicates
             for o in sl_orders[:-1]:
@@ -141,9 +170,14 @@ def sync_engine(engine):
 
             res = place_sl_order(fyers, symbol, state.qty, expected_sl)
 
-            state.sl_order_id = res.get("id")
+            if res.get("s") == "ok":
+                state.sl_order_id = res.get("id")
+                log(f"{symbol} NEW SL ORDER PLACED SUCCESSFULLY @ {expected_sl}")
+                try:
+                    log_state(state, "RECOVERY - NEW SL ORDER PLACED")
+                except Exception as e:
+                    error_log(f"RECOVERY - NEW SL ORDER PLACED: LOGGING FAILED: {e}")
 
-            log(f"{symbol} NEW SL PLACED @ {expected_sl}")
 
     else:
         # no position → cancel all SL
@@ -152,6 +186,10 @@ def sync_engine(engine):
             log(f"{symbol} CANCELLED ORPHAN SL")
 
         state.sl_order_id = None
+        try:
+            log_state(state, "RECOVERY - NO SL ORDER RESET")
+        except Exception as e:
+            error_log(f"RECOVERY - NO SL ORDER RESET: LOGGING FAILED: {e}")
 
     # --------------------------------------
     # STEP 5: PARTIAL FILL DETECTION

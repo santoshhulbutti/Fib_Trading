@@ -133,6 +133,27 @@ def log_state(state, event="STATE_UPDATE"):
 
         _previous_states[symbol] = deepcopy(current)
 
+## Sample input
+
+
+## After order placement
+#     state.entry_order_id = order_id
+#     log_state(state, "ENTRY_ORDER_PLACED")
+
+## After trade activation
+#     state.set_active_trade(...)
+#     log_state(state, "TRADE_ACTIVATED")
+
+## After SL update
+#     state.update_sl(new_sl)
+#     log_state(state, "TRAIL_SL_UPDATED")
+
+## After recovery
+#     log_state(state, "RECOVERY_SYNC")
+
+# # After reset
+#     state.reset_trade()
+#     log_state(state, "TRADE_RESET")
 
 ## Sample output
 

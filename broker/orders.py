@@ -24,8 +24,16 @@ def place_stop_buy(fyers, symbol, qty, trigger_price):
 
         res = fyers.place_order(data)
 
+        if res.get("s") =="ok":
+            log(f"BUY ORDER SUBMIT SUCCESSFULLY: {res}")
+            log(f"{symbol} STOP BUY ORDER: {res}")
+            return res
+        elif res.get("s") =="error":
+            error_log(f"BUY ORDER SUBMIT ERROR: {res}")
+            return res
+
+
         # NEED TO VERIFY ORDER SUCCESS OR NOT THEN LOG THE RESPONSE
-        log(f"{symbol} STOP BUY ORDER -> {res}")
         return res
 
     except Exception as e:
@@ -79,7 +87,7 @@ def place_sl_order(fyers, symbol, qty, sl_price):
         }
 
         res = fyers.place_order(data)
-        log(f"{symbol} SL ORDER -> {res}")
+        log(f"{symbol} SL ORDER: {res}")
         return res
 
     except Exception as e:
@@ -105,7 +113,15 @@ def place_market_order(fyers, symbol, qty, side):
         }
 
         res = fyers.place_order(data)
-        log(f"{symbol} MARKET ORDER ({side}) -> {res}")
+
+        if res.get("s") =="ok":
+            log(f"MARKET ORDER SUBMIT SUCCESSFULLY: {res}")
+            log(f"{symbol} MARKET ORDER ({side}): {res}")
+            return res
+        elif res.get("s") =="error":
+            error_log(f"MARKET ORDER SUBMIT ERROR: {res}")
+            return res
+        # log(f"{symbol} MARKET ORDER ({side}): {res}")
         return res
 
     except Exception as e:
@@ -120,7 +136,7 @@ def cancel_order(fyers, order_id):
 
     try:
         res = fyers.cancel_order({"id": order_id})
-        log(f"CANCEL ORDER → {res}")
+        log(f"CANCEL ORDER: {res}")
         return res
 
     except Exception as e:
@@ -143,8 +159,13 @@ def modify_order(fyers, order_id, price, trigger):
         }
 
         res = fyers.modify_order(data)
-        log(f"MODIFY ORDER -> {res}")
-        return res
+        if res.get("s") =="ok":
+            log(f"MODIFY ORDER: {res}")
+            return res
+        elif res.get("s") =="error":
+            error_log(f"MODIFY ORDER ERROR: {res}")
+            return res
+
 
     except Exception as e:
         error_log(f"MODIFY ORDER ERROR: {e}")
@@ -174,15 +195,22 @@ def close_position(fyers, symbol):
         positions = get_positions(fyers)
 
         for pos in positions:
-            if pos["symbol"] == symbol and pos["qty"] != 0:
+            if pos.get("symbol") == symbol and pos.get("qty") != 0:
 
-                qty = abs(pos["qty"])
-                side = "SELL" if pos["qty"] > 0 else "BUY"
+                qty = abs(pos.get("qty"))
+                side = "SELL" if pos.get("qty") > 0 else "BUY"
 
                 log(f"{symbol} CLOSING POSITION | Qty={qty} | Side={side}")
 
-                place_market_order(fyers, symbol, qty, side)
-                return
+                res = place_market_order(fyers, symbol, qty, side)
+                if res.get("s") == "ok":
+                    log(f"POSITION CLOSE ORDER SUBMIT SUCCESSFULLY: {res}")
+                    log(f"{symbol} POSITION CLOSE ORDER ({side}): {res}")
+                    return res
+                elif res.get("s") == "error":
+                    error_log(f"POSITION CLOSE ORDER SUBMIT ERROR: {res}")
+                    return res
+                return res
 
         log(f"{symbol} NO POSITION FOUND TO CLOSE")
 

@@ -20,6 +20,7 @@ from core.engine import Engine
 from core.recovery import sync_engine
 
 from utils.logger import log, error_log
+from utils.state_logger import log_state
 from utils.time_utils import is_eod_exit_time
 
 import datetime
@@ -64,8 +65,12 @@ def initialize_system():
         log(f"Yesterday's OHLC for {eq_symbol} : {eq_ohlc}")
         log(f"Fib levels for {eq_symbol} : {eq_levels}")
 
-
         eq_engine = Engine(fyers, eq_symbol, eq_levels)
+
+        try:
+            log_state(eq_engine.state,"MAIN INITIAL STATE")
+        except Exception as e:
+            error_log(f"MAIN INITIAL STATE LOGGING FAILED: {e}")
 
         return fyers, [eq_engine], [eq_symbol]
 
@@ -96,6 +101,12 @@ def initialize_system():
         call_engine = Engine(fyers, call_symbol, call_levels)
         put_engine = Engine(fyers, put_symbol, put_levels)
 
+        try:
+            log_state(call_engine.state, "MAIN CALL INITIAL STATE")
+            log_state(put_engine.state, "MAIN PUT INITIAL STATE")
+        except Exception as e:
+            error_log(f"INITIAL STATE LOGGING FAILED: {e}")
+
         return fyers, [call_engine, put_engine], [call_symbol, put_symbol]
 
 
@@ -117,7 +128,7 @@ def run():
         except Exception as e:
             error_log(f"{engine.symbol} RECOVERY FAILED: {e}")
 
-    log("INITIAL RECOVERY COMPLETE")
+    log("INITIAL RECOVERY ENGINE COMPLETED")
 
     # --------------------------------------
     # 🔥 RECONNECT RESYNC
@@ -132,7 +143,7 @@ def run():
             except Exception as e:
                 error_log(f"{engine.symbol} RESYNC FAILED: {e}")
 
-        log("RECONNECT RESYNC COMPLETE")
+        log("RECONNECT RESYNC ENGINE COMPLETE")
 
     # --------------------------------------
     # PRICE CALLBACK
@@ -164,7 +175,13 @@ def run():
                 log("EOD EXIT TRIGGERED")
 
                 for engine in engines:
-                    engine.force_exit()
+                    # res = engine.force_exit()
+                    try:
+                        res = engine.force_exit()
+                        log(f"EOD EXIT FOR {engine.symbol} : {res.get("message")}")
+                    except Exception as e:
+                        log(f"EOD EXIT ERROR: {e}")
+
 
         except Exception as ex:
             error_log(f"MAIN ERROR: {ex}")

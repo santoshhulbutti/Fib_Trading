@@ -21,7 +21,8 @@ from core.recovery import sync_engine
 
 from utils.logger import log, error_log
 from utils.state_logger import log_state
-from utils.time_utils import is_eod_exit_time
+
+from utils.time_utils import is_market_open, is_eod_exit_time
 
 import datetime
 import threading
@@ -116,6 +117,18 @@ def initialize_system():
 # ------------------------------------------
 def run():
 
+    try:
+
+        # ----------------------------------
+        # MARKET HOURS CHECK
+        # ----------------------------------
+        if not is_market_open():
+            log("MARKET IS CLOSED. CANNOT INITIATE ALGO SYSTEM.")
+            return
+
+    except Exception as e:
+        error_log(f"{e}")
+
     fyers, engines, symbols = initialize_system()
 
     log("ENGINE INSTANCE CREATION COMPLETE...")
@@ -190,15 +203,17 @@ def run():
             # EOD EXIT
             # ----------------------------------
             if is_eod_exit_time():
-                log("EOD EXIT TRIGGERED")
+                log("EOD EXIT INITIATED...")
 
                 for engine in engines:
                     # res = engine.force_exit()
                     try:
-                        res = engine.force_exit()
-                        log(f"EOD EXIT FOR {engine.symbol} : {res.get("message")}")
+                        if engine.state.active_trade:
+                            res = engine.force_exit()
+                            log(f"EOD EXIT FOR {engine.symbol} : {res.get("message")}")
                     except Exception as e:
                         log(f"EOD EXIT ERROR: {e}")
+                log("EOD EXIT COMPLETED")
 
 
         except Exception as ex:

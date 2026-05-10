@@ -148,7 +148,14 @@ def sync_engine(engine):
             if abs(broker_sl - expected_sl) > 1:
                 log(f"{symbol} SL MISMATCH -> FIXING")
 
-                cancel_order(fyers, latest_sl.get("id"))
+                can = cancel_order(fyers, latest_sl.get("id"))
+
+                if can.get("s") == "ok":
+                    log(f"{symbol} MISMATCHED SL ORDER CANCELLED")
+                    try:
+                        log_state(state, "RECOVERY - MISMATCH SL ORDER CANCELLED")
+                    except Exception as e:
+                        error_log(f"RECOVERY - MISMATCH SL ORDER CANCEL: LOGGING FAILED: {e}")
 
                 res = place_sl_order(fyers, symbol, state.qty, expected_sl)
 
@@ -156,9 +163,9 @@ def sync_engine(engine):
                     state.sl_order_id = res.get("id")
                     log(f"{symbol} SL ORDER PLACED SUCCESSFULLY @ {expected_sl}")
                     try:
-                        log_state(state, "RECOVERY - SL ORDER PLACED")
+                        log_state(state, "RECOVERY - CORRECT SL ORDER PLACED")
                     except Exception as e:
-                        error_log(f"RECOVERY - SL ORDER PLACED: LOGGING FAILED: {e}")
+                        error_log(f"RECOVERY - CORRECT SL ORDER PLACED: LOGGING FAILED: {e}")
 
             # cancel duplicates
             for o in sl_orders[:-1]:
@@ -172,11 +179,11 @@ def sync_engine(engine):
 
             if res.get("s") == "ok":
                 state.sl_order_id = res.get("id")
-                log(f"{symbol} NEW SL ORDER PLACED SUCCESSFULLY @ {expected_sl}")
+                log(f"{symbol} RECOVERY SL ORDER PLACED SUCCESSFULLY @ {expected_sl}")
                 try:
-                    log_state(state, "RECOVERY - NEW SL ORDER PLACED")
+                    log_state(state, "RECOVERY - SL ORDER PLACED")
                 except Exception as e:
-                    error_log(f"RECOVERY - NEW SL ORDER PLACED: LOGGING FAILED: {e}")
+                    error_log(f"RECOVERY - SL ORDER PLACED: LOGGING FAILED: {e}")
 
 
     else:

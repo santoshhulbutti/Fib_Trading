@@ -14,10 +14,10 @@ def place_stop_buy(fyers, symbol, qty, trigger_price):
         data = {
             "symbol": symbol,
             "qty": qty,
-            "type": 3,  # STOP LIMIT
+            "type": 4,  # Stop Limit - Limit Order / SL-L ORDER
             "side": 1,  # BUY
             "productType": "INTRADAY",
-            "limitPrice": 0,
+            "limitPrice": trigger_price+0.1,
             "stopPrice": trigger_price,
             "validity": "DAY"
         }
@@ -153,7 +153,7 @@ def modify_order(fyers, order_id, price, trigger):
         data = {
             "id": order_id,
             "type": 3,
-            "limitPrice": price,
+            "limitPrice": 0,
             "stopPrice": trigger,
             "qty": 0  # unchanged
         }

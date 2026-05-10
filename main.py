@@ -27,6 +27,7 @@ import datetime
 import threading
 import time
 
+order_ws_initialized = False
 
 # ------------------------------------------
 # SYSTEM INIT
@@ -133,7 +134,24 @@ def run():
     # --------------------------------------
     # 🔥 RECONNECT RESYNC
     # --------------------------------------
+
     def resync_all():
+
+        global order_ws_initialized
+
+        # ----------------------------------
+        # SKIP FIRST CONNECT
+        # ----------------------------------
+        if not order_ws_initialized:
+            order_ws_initialized = True
+
+            log("INITIAL ORDER WS CONNECT -> SKIPPING RESYNC")
+
+            return
+
+        # ----------------------------------
+        # REAL RECONNECT RESYNC
+        # ----------------------------------
 
         log("RECONNECT RESYNC START")
 

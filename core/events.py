@@ -5,6 +5,8 @@
 import bisect
 
 
+
+
 # ------------------------------------------
 # FIND LEVEL BAND (FAST)
 # ------------------------------------------
@@ -43,8 +45,11 @@ def detect_cross(prev_price, curr_price, level):
 # ------------------------------------------
 # TRIGGER HIT (FIRST TRADE)
 # ------------------------------------------
+# def trigger_hit(price, trigger_price, tick_size):
+#     return trigger_price - tick_size < price < trigger_price + tick_size
+
 def trigger_hit(price, trigger_price):
-    return trigger_price-0.05 < price < trigger_price+0.05
+    return trigger_price-0.1 < price < trigger_price+0.1
 
 # def trigger_short_hit(price, trigger_s_price):
 #     return price >= trigger_s_price

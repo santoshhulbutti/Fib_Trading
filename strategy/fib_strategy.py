@@ -80,20 +80,20 @@ def calculate_sl(entry_price):
 # ------------------------------------------
 # TRAILING SL LOGIC
 # ------------------------------------------
-def calculate_trailing_sl(entry_price, current_price):
-    """
-    Apply trailing SL rules based on move from entry
-    """
-
-    move = current_price - entry_price
-    new_sl = None
-
-    # Iterate in ascending order
-    for move_level in sorted(TRAILING_RULES.keys()):
-        if move >= move_level:
-            new_sl = entry_price + TRAILING_RULES[move_level]
-
-    return new_sl
+# def calculate_trailing_sl(entry_price, current_price):
+#     """
+#     Apply trailing SL rules based on move from entry
+#     """
+#
+#     move = current_price - entry_price
+#     new_sl = None
+#
+#     # Iterate in ascending order
+#     for move_level in sorted(TRAILING_RULES.keys()):
+#         if move >= move_level:
+#             new_sl = entry_price + TRAILING_RULES[move_level]
+#
+#     return new_sl
 
 
 # ------------------------------------------

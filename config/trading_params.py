@@ -33,14 +33,15 @@ else:
 if test_mode:
     # ---- FAST TRAILING (EQUITY TESTING) ----
     TRAILING_RULES = {
-        5: 2,
-        6: 3,
-        7: 4,
-        9: 5,
-        12: 6,
-        15: 10,
-        20: 16,
-        25: 20
+        10: 2,
+        15: 5,
+        20: 10,
+        25: 12,
+        30: 18,
+        35: 20,
+        40: 25,
+        50: 30,
+        60: 40
     }
 else:
     # ---- REAL OPTIONS TRAILING ----

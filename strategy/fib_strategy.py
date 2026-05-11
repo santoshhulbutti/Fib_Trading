@@ -5,7 +5,7 @@
 from config.trading_params import FIB_RATIOS, SL_POINTS, TRAILING_RULES
 
 
-def round_to_tick(price, tick_size=0.05):
+def round_to_tick(price, tick_size=0.1):
     return round(round(price / tick_size) * tick_size, 2)
 
 # ------------------------------------------

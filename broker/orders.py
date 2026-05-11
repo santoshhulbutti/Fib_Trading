@@ -147,7 +147,7 @@ def cancel_order(fyers, order_id):
 # ------------------------------------------
 # MODIFY ORDER (TRAILING SL)
 # ------------------------------------------
-def modify_order(fyers, order_id, price, trigger):
+def modify_order(fyers, order_id, price, trigger, qty):
 
     try:
         data = {
@@ -155,7 +155,7 @@ def modify_order(fyers, order_id, price, trigger):
             "type": 3,
             "limitPrice": 0,
             "stopPrice": trigger,
-            "qty": 0  # unchanged
+            "qty": qty  # unchanged
         }
 
         res = fyers.modify_order(data)

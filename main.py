@@ -4,7 +4,7 @@
 
 from fyers_apiv3 import fyersModel
 
-import pandas as pd
+# import pandas as pd
 
 from broker.auth import get_access_token
 from broker.data_ws import start_ws
@@ -24,7 +24,6 @@ from utils.state_logger import log_state
 
 from utils.time_utils import is_market_open, is_eod_exit_time
 
-import datetime
 import threading
 import time
 

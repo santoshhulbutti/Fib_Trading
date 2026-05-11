@@ -1,0 +1,37 @@
+[2026-05-10 18:06:57:628182] NSE:ADANIPORTS-EQ | INITIAL_STATE | {"symbol": "NSE:ADANIPORTS-EQ", "active_trade": false, "entry_price": null, "sl_price": null, "entry_order_id": null, "sl_order_id": null, "qty": 0, "first_trade_done": false, "trades_today": 0, "prev_price": null, "curr_index": null}
+[2026-05-10 18:07:00:630353] NSE:ADANIPORTS-EQ | ENGINE - FIRST STATE | {"prev_price": {"old": null, "new": 1760.4}, "curr_index": {"old": null, "new": 6}}
+[2026-05-10 18:16:00:776314] NSE:ADANIPORTS-EQ | INITIAL_STATE | {"symbol": "NSE:ADANIPORTS-EQ", "active_trade": false, "entry_price": null, "sl_price": null, "entry_order_id": null, "sl_order_id": null, "qty": 0, "first_trade_done": false, "trades_today": 0, "prev_price": null, "curr_index": null}
+[2026-05-10 18:16:04:871625] NSE:ADANIPORTS-EQ | ENGINE - FIRST STATE | {"prev_price": {"old": null, "new": 1760.4}, "curr_index": {"old": null, "new": 6}}
+[2026-05-10 18:19:18:893206] NSE:ADANIPORTS-EQ | INITIAL_STATE | {"symbol": "NSE:ADANIPORTS-EQ", "active_trade": false, "entry_price": null, "sl_price": null, "entry_order_id": null, "sl_order_id": null, "qty": 0, "first_trade_done": false, "trades_today": 0, "prev_price": null, "curr_index": null}
+[2026-05-10 18:19:21:910179] NSE:ADANIPORTS-EQ | ENGINE - FIRST STATE | {"prev_price": {"old": null, "new": 1760.4}, "curr_index": {"old": null, "new": 6}}
+[2026-05-11 09:11:08:314472] NSE:ADANIPORTS-EQ | INITIAL_STATE | {"symbol": "NSE:ADANIPORTS-EQ", "active_trade": false, "entry_price": null, "sl_price": null, "entry_order_id": null, "sl_order_id": null, "qty": 0, "first_trade_done": false, "trades_today": 0, "prev_price": null, "curr_index": null}
+[2026-05-11 09:11:12:362210] NSE:ADANIPORTS-EQ | ENGINE - FIRST STATE | {"prev_price": {"old": null, "new": 1757.1}, "curr_index": {"old": null, "new": 8}}
+[2026-05-11 09:15:35:213789] NSE:ADANIPORTS-EQ | INITIAL_STATE | {"symbol": "NSE:ADANIPORTS-EQ", "active_trade": false, "entry_price": null, "sl_price": null, "entry_order_id": null, "sl_order_id": null, "qty": 0, "first_trade_done": false, "trades_today": 0, "prev_price": null, "curr_index": null}
+[2026-05-11 09:15:39:287587] NSE:ADANIPORTS-EQ | ENGINE - FIRST STATE | {"prev_price": {"old": null, "new": 1742.9}, "curr_index": {"old": null, "new": 4}}
+[2026-05-11 09:21:32:057002] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1740.6, "new": 1741.0}}
+[2026-05-11 09:21:32:460386] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1741.0, "new": 1740.8}}
+[2026-05-11 09:22:10:877283] NSE:ADANIPORTS-EQ | INITIAL_STATE | {"symbol": "NSE:ADANIPORTS-EQ", "active_trade": false, "entry_price": null, "sl_price": null, "entry_order_id": null, "sl_order_id": null, "qty": 0, "first_trade_done": false, "trades_today": 0, "prev_price": null, "curr_index": null}
+[2026-05-11 09:22:15:418181] NSE:ADANIPORTS-EQ | ENGINE - FIRST STATE | {"prev_price": {"old": null, "new": 1737.3}, "curr_index": {"old": null, "new": 4}}
+[2026-05-11 09:22:17:120299] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1737.3, "new": 1737.6}}
+[2026-05-11 09:22:17:618876] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1737.6, "new": 1738.2}}
+[2026-05-11 09:24:06:464375] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1742.0, "new": 1741.1}}
+[2026-05-11 09:24:06:796613] NSE:ADANIPORTS-EQ | ENGINE - FIRST TRADE STATE | {"entry_order_id": {"old": null, "new": "26051100029220"}}
+[2026-05-11 09:24:06:798606] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1741.1, "new": 1742.3}}
+[2026-05-11 09:28:48:671311] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1750.0, "new": 1749.5}}
+[2026-05-11 09:28:49:077596] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1749.5, "new": 1750.0}}
+[2026-05-11 09:28:49:563879] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1750.0, "new": 1750.5}}
+[2026-05-11 09:28:49:998498] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1750.5, "new": 1749.6}}
+[2026-05-11 09:28:50:307115] NSE:ADANIPORTS-EQ | ENGINE - LEVEL DETECT STATE | {"prev_price": {"old": 1749.6, "new": 1750.6}}
+[2026-05-11 09:29:49:019737] NSE:ADANIPORTS-EQ | INITIAL_STATE | {"symbol": "NSE:ADANIPORTS-EQ", "active_trade": false, "entry_price": null, "sl_price": null, "entry_order_id": null, "sl_order_id": null, "qty": 0, "first_trade_done": false, "trades_today": 0, "prev_price": null, "curr_index": null}
+[2026-05-11 09:29:49:603561] NSE:ADANIPORTS-EQ | RECOVERY - OPEN POSITION STATE | {"active_trade": {"old": false, "new": true}, "entry_price": {"old": null, "new": 1752.3}, "sl_price": {"old": null, "new": 1742.3}, "qty": {"old": 0, "new": 1}, "trades_today": {"old": 0, "new": 1}}
+[2026-05-11 09:29:49:707823] NSE:ADANIPORTS-EQ | RECOVERY - SL ORDER PLACED | {"sl_order_id": {"old": null, "new": "26051100042032"}}
+[2026-05-11 09:29:53:269566] NSE:ADANIPORTS-EQ | ENGINE - FIRST STATE | {"prev_price": {"old": null, "new": 1744.1}, "curr_index": {"old": null, "new": 4}}
+[2026-05-11 09:38:18:324547] NSE:ADANIPORTS-EQ | INITIAL_STATE | {"symbol": "NSE:ADANIPORTS-EQ", "active_trade": false, "entry_price": null, "sl_price": null, "entry_order_id": null, "sl_order_id": null, "qty": 0, "first_trade_done": false, "trades_today": 0, "prev_price": null, "curr_index": null}
+[2026-05-11 09:38:18:970330] NSE:ADANIPORTS-EQ | RECOVERY - OPEN POSITION STATE | {"active_trade": {"old": false, "new": true}, "entry_price": {"old": null, "new": 1752.3}, "sl_price": {"old": null, "new": 1742.3}, "qty": {"old": 0, "new": 1}, "trades_today": {"old": 0, "new": 1}}
+[2026-05-11 09:38:22:812295] NSE:ADANIPORTS-EQ | ENGINE - FIRST STATE | {"sl_order_id": {"old": null, "new": "26051100042032"}, "prev_price": {"old": null, "new": 1747.9}, "curr_index": {"old": null, "new": 4}}
+[2026-05-11 09:46:28:593601] NSE:ADANIPORTS-EQ | INITIAL_STATE | {"symbol": "NSE:ADANIPORTS-EQ", "active_trade": false, "entry_price": null, "sl_price": null, "entry_order_id": null, "sl_order_id": null, "qty": 0, "first_trade_done": false, "trades_today": 0, "prev_price": null, "curr_index": null}
+[2026-05-11 09:46:29:174243] NSE:ADANIPORTS-EQ | RECOVERY - OPEN POSITION STATE | {"active_trade": {"old": false, "new": true}, "entry_price": {"old": null, "new": 1752.3}, "sl_price": {"old": null, "new": 1742.3}, "qty": {"old": 0, "new": 1}, "trades_today": {"old": 0, "new": 1}}
+[2026-05-11 09:46:32:908213] NSE:ADANIPORTS-EQ | ENGINE - FIRST STATE | {"sl_order_id": {"old": null, "new": "26051100042032"}, "prev_price": {"old": null, "new": 1755.2}, "curr_index": {"old": null, "new": 5}}
+[2026-05-11 09:49:59:382057] NSE:ADANIPORTS-EQ | ENGINE - MODIFY SL STATE | {"sl_price": {"old": 1742.3, "new": 1754.3}, "prev_price": {"old": 1755.2, "new": 1761.7}, "curr_index": {"old": 5, "new": 6}}
+[2026-05-11 10:04:52:189731] NSE:ADANIPORTS-EQ | ENGINE - MODIFY SL STATE | {"sl_price": {"old": 1754.3, "new": 1757.3}, "prev_price": {"old": 1761.7, "new": 1765.0}}
+[2026-05-11 10:34:33:112309] NSE:ADANIPORTS-EQ | ENGINE - HANDLE POSITION CLOSE EVENT | {"active_trade": {"old": true, "new": false}, "entry_price": {"old": 1752.3, "new": null}, "sl_price": {"old": 1757.3, "new": null}, "sl_order_id": {"old": "26051100042032", "new": null}, "qty": {"old": 1, "new": 0}, "prev_price": {"old": 1765.0, "new": 1757.7}, "curr_index": {"old": 6, "new": 5}}

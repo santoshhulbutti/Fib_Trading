@@ -103,3 +103,77 @@
 [ERROR] 2026-05-08 09:16:44 | TRADE WS ERROR: 'NoneType' object has no attribute 'get'
 [ERROR] 2026-05-08 09:40:48 | NSE:ADANIPORTS-EQ RECOVERY FAILED: 'tradeDateTime'
 [ERROR] 2026-05-08 09:40:50 | NSE:ADANIPORTS-EQ RESYNC FAILED: 'tradeDateTime'
+[ERROR] 2026-05-11 09:17:09:651063 | BUY ORDER SUBMIT ERROR: {'code': -50, 'message': 'LimitPrice not a multiple of tick size 0.1000', 's': 'error'}
+[ERROR] 2026-05-11 09:17:11:809474 | BUY ORDER SUBMIT ERROR: {'code': -50, 'message': 'LimitPrice not a multiple of tick size 0.1000', 's': 'error'}
+[ERROR] 2026-05-11 09:31:01:409799 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:02:743606 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:03:066688 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:07:339917 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:07:985402 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:08:576861 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:09:366057 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:09:674954 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:10:592994 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:10:902348 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:11:010065 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:12:245982 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:12:280985 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:12:947747 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:13:065656 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:14:308902 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:15:230588 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:15:541125 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:16:439168 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:16:678119 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:17:178876 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:17:896744 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:18:716100 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:19:317117 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:19:810036 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:19:880301 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:20:307671 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:20:759322 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:21:380819 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:22:983372 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:23:100416 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:23:544342 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:24:090874 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:24:347977 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:24:763444 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:25:270801 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:25:929131 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:25:959650 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:26:261263 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:27:181119 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:27:622303 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:28:717395 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:30:149780 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:30:179775 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:30:717119 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:31:122230 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:31:614805 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:32:225261 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:32:740257 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:33:312597 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:33:572513 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:34:492269 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:34:811725 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:31:35:100821 | MODIFY ORDER ERROR: {'code': -50, 'message': 'qty: Must be greater than or equal to 1', 's': 'error', 'id': '26051100042032'}
+[ERROR] 2026-05-11 09:39:30:909177 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:39:51:600081 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:39:53:023429 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:39:53:572917 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:39:56:095391 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:39:58:964617 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:39:59:371431 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:39:59:902700 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:00:497214 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:01:011801 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:01:230801 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:01:832093 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:02:548603 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:04:585954 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:04:834400 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:05:328830 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:05:821103 | MAIN ERROR: 'Engine' object has no attribute 'qty'
+[ERROR] 2026-05-11 09:40:06:234452 | MAIN ERROR: 'Engine' object has no attribute 'qty'

@@ -13,10 +13,9 @@ from core.events import (
 )
 
 from strategy.fib_strategy import calculate_sl
-
 from config.trading_params import SL_POINTS, TRAILING_RULES
-
 # from utils.symbol_master import get_tick_size
+from datetime import datetime
 
 from broker.orders import (
     place_stop_buy,
@@ -52,8 +51,10 @@ class Engine:
         # FIRST TICK INIT
         # ----------------------------------
         if state.prev_price is None:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S:%f")
             state.prev_price = price
             state.curr_index = get_level_index(price, self.levels)
+            log(f"[INFO] {timestamp} |{self.symbol} FIRST TICK RECEIVED: {price}")
             try:
                 log_state(state, "ENGINE - FIRST STATE")
             except Exception as e:
@@ -66,10 +67,10 @@ class Engine:
         idx = get_level_index(price, self.levels, state.curr_index)
         state.curr_index = idx
 
-        try:
-            log_state(state, "ENGINE - LEVEL DETECT STATE")
-        except Exception as e:
-            error_log(f"ENGINE - LEVEL DETECT STATE LOGGING FAILED: {e}")
+        # try:
+        #     log_state(state, "ENGINE - LEVEL DETECT STATE")
+        # except Exception as e:
+        #     error_log(f"ENGINE - LEVEL DETECT STATE LOGGING FAILED: {e}")
 
         lower = self.levels[idx]
         upper = self.levels[idx + 1]
@@ -116,7 +117,7 @@ class Engine:
             if new_sl and new_sl > state.sl_price:
                 # state.update_sl(new_sl)
                 if state.sl_order_id:
-                    mod_res = modify_order(self.fyers, state.sl_order_id, new_sl, new_sl)
+                    mod_res = modify_order(self.fyers, state.sl_order_id, new_sl, new_sl, self.state.qty)
                     if mod_res.get('s')=='ok':
                         state.update_sl(new_sl)
                         log(f"{self.symbol} TRAILED SL SUCCESS, NEW SL: {new_sl}")

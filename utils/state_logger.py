@@ -12,11 +12,11 @@ from pathlib import Path
 # LOG FILE
 # ------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
-LOG_DIR = BASE_DIR / "logs"
+LOG_DIR = BASE_DIR / "logs/state"
 
 LOG_DIR.mkdir(exist_ok=True)
-
-STATE_LOG_FILE = LOG_DIR / "state_transitions.log"
+dt = datetime.now().strftime("%d-%m-%Y")
+STATE_LOG_FILE = LOG_DIR / f"state_transitions{dt}_.log"
 
 
 # ------------------------------------------

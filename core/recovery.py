@@ -54,7 +54,6 @@ def sync_engine(engine):
     active_position = None
 
     for pos in positions:
-        log(pos)
         if pos.get("symbol") == symbol and pos.get("qty") != 0:
             active_position = pos
             break

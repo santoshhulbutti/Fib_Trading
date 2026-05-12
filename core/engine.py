@@ -26,7 +26,7 @@ from broker.orders import (
     close_position
 )
 
-from utils.logger import log, error_log
+from utils.logger import log, error_log, trade_log
 from utils.state_logger import log_state
 
 
@@ -46,7 +46,6 @@ class Engine:
 
         state = self.state
 
-
         # ----------------------------------
         # FIRST TICK INIT
         # ----------------------------------
@@ -65,6 +64,11 @@ class Engine:
         # LEVEL DETECTION
         # ----------------------------------
         idx = get_level_index(price, self.levels, state.curr_index)
+        if state.curr_index != idx:
+            try:
+                log_state(state, "ENGINE - FIB RANGE CHANGE")
+            except Exception as e:
+                error_log(f"ENGINE - FIB RANGE CHANGE LOGGING FAILED: {e}")
         state.curr_index = idx
 
         # try:
@@ -249,6 +253,10 @@ class Engine:
                 return
 
             log(f"{self.symbol} TRADE FILLED @ {fill_price} FOR QTY: {filled_qty}")
+            fill_side = "BUY" if msg.get('trades').get("side") == 1 else "SELL" if msg.get('trades').get("side") == -1 else "ERROR"
+            if fill_side != "ERROR":
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S:%f")
+                trade_log(f"[TRADE] {timestamp} | {self.symbol}, SIDE:{fill_side}, TRADED PRICE:{fill_price}, QTY:{filled_qty}")
 
             if msg.get('trades').get('side') == 1:
 

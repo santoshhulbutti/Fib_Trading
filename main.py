@@ -4,14 +4,16 @@
 
 from fyers_apiv3 import fyersModel
 
-# import pandas as pd
+import os
+import pandas as pd
+
 
 from broker.auth import get_access_token
 from broker.data_ws import start_ws
 from broker.order_ws import start_order_ws
 from broker.data_fetch import get_prev_day_ohlc_for_symbol
 
-from config.settings import CLIENT_ID
+from config.settings import CLIENT_ID, ACCOUNT_PATH
 from config.symbols import get_option_symbols
 
 from strategy.fib_strategy import generate_fib_levels
@@ -24,8 +26,13 @@ from utils.state_logger import log_state
 
 from utils.time_utils import is_market_open, is_eod_exit_time
 
+from datetime import datetime
+
 import threading
 import time
+
+os.makedirs(ACCOUNT_PATH, exist_ok=True)
+dt = datetime.now().strftime("%d-%m-%Y")
 
 order_ws_initialized = False
 
@@ -45,6 +52,18 @@ def initialize_system():
         log_path=""
     )
 
+    try:
+        funds = fyers.funds()
+        fund = funds.get("fund_limit")[9].get("equityAmount")
+        file_path = os.path.join(ACCOUNT_PATH, "funds.txt")
+        msg = f"[AVAILABLE FUNDS]: {dt} | {fund}"
+        log(f"AVAILABLE FUNDS: {fund}")
+        with open(file_path, "a") as f:
+            f.write(msg + "\n")
+
+    except Exception as e:
+        error_log(f"FAILED TO FETCH FUNDS: {e}")
+
     log("FYERS MODEL CREATED...")
 
     # ======================================
@@ -57,6 +76,10 @@ def initialize_system():
     # TEST MODE (EQUITY)
     # ======================================
     if test_mode:
+
+        # df = pd.read_csv("data/filtered_stocks/filtered_stocks.csv")
+        # eq_symbol = df["symbol"].tolist()
+        # log(f"SELECTED SYMBOLS: {eq_symbol}")
 
         eq_symbol = "NSE:ADANIPORTS-EQ"
 
@@ -140,8 +163,6 @@ def run():
             sync_engine(engine)
         except Exception as e:
             error_log(f"{engine.symbol} RECOVERY FAILED: {e}")
-
-    log("INITIAL RECOVERY ENGINE COMPLETED")
 
     # --------------------------------------
     # 🔥 RECONNECT RESYNC

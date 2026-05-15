@@ -61,7 +61,7 @@ def sync_engine(engine):
     if active_position:
         # qty = abs(active_position["qty"])
         # entry_price = float(active_position.get("avgPrice", 0))
-        if active_position.get("qty")>0:
+        if active_position.get("qty")!=0:
             entry_price, qty = get_latest_buy_trade(fyers, symbol)
 
             log(f"{symbol} POSITION FOUND | QTY={qty} | ENTRY={entry_price}")
@@ -69,6 +69,7 @@ def sync_engine(engine):
             sl_price = calculate_sl(entry_price)
 
             state.set_active_trade(entry_price, sl_price, qty)
+            # state.first_trade_done = True
             try:
                 log_state(state, "RECOVERY - OPEN POSITION STATE")
             except Exception as e:

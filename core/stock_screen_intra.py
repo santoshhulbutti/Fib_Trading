@@ -33,20 +33,20 @@ FILTERED_FILE = BASE_DIR / "data/filtered_stocks/filtered_stocks.csv"
 # =========================================================
 # CONFIG
 # =========================================================
-
-CLIENT_ID = "YOUR_CLIENT_ID"
-ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
-
-# =========================================================
-# FYERS CONNECTION
-# =========================================================
-
-fyers = fyersModel.FyersModel(
-    client_id=CLIENT_ID,
-    token=ACCESS_TOKEN,
-    is_async=False,
-    log_path=""
-)
+#
+# CLIENT_ID = "YOUR_CLIENT_ID"
+# ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
+#
+# # =========================================================
+# # FYERS CONNECTION
+# # =========================================================
+#
+# fyers = fyersModel.FyersModel(
+#     client_id=CLIENT_ID,
+#     token=ACCESS_TOKEN,
+#     is_async=False,
+#     log_path=""
+# )
 
 # =========================================================
 # DOWNLOAD NIFTY500 STOCKS
@@ -92,7 +92,7 @@ def load_symbols():
 # FETCH HISTORICAL DATA
 # =========================================================
 
-def get_historical_data(symbol):
+def get_historical_data(symbol, fyers):
 
     range_from = (
         datetime.now() - timedelta(days=250)
@@ -110,6 +110,7 @@ def get_historical_data(symbol):
     }
 
     response = fyers.history(data=data)
+    print(response)
 
     if response.get("s") != "ok":
 
@@ -269,7 +270,14 @@ def load_filtered_stocks():
 # MAIN SCREENER
 # =========================================================
 
-def run_screener():
+def run_screener(access_token):
+    from config.settings import CLIENT_ID
+    fyers = fyersModel.FyersModel(
+        client_id=CLIENT_ID,
+        token=access_token,
+        is_async=False,
+        log_path=""
+    )
 
     symbols = load_symbols()
 
@@ -281,7 +289,7 @@ def run_screener():
 
         try:
 
-            df = get_historical_data(symbol)
+            df = get_historical_data(symbol, fyers)
 
             if df is None:
                 continue
@@ -303,28 +311,28 @@ def run_screener():
     # Save filtered stocks
     save_filtered_stocks(matched_stocks)
 
-    return matched_stocks
+    return #matched_stocks
 
 
 # =========================================================
 # ENTRY
 # =========================================================
-
-if __name__ == "__main__":
-
-    # Run screener
-    filtered_list = run_screener()
-
-    print("\n==============================")
-    print("FILTERED STOCKS")
-    print("==============================")
-
-    for stock in filtered_list:
-        print(stock)
-
-    # Example:
-    # Load filtered stocks later
-    live_trade_list = load_filtered_stocks()
-
-    print("\nLoaded for strategy:")
-    print(live_trade_list)
+#
+# if __name__ == "__main__":
+#
+#     # Run screener
+#     filtered_list = run_screener()
+#
+#     print("\n==============================")
+#     print("FILTERED STOCKS")
+#     print("==============================")
+#
+#     for stock in filtered_list:
+#         print(stock)
+#
+#     # Example:
+#     # Load filtered stocks later
+#     live_trade_list = load_filtered_stocks()
+#
+#     print("\nLoaded for strategy:")
+#     print(live_trade_list)

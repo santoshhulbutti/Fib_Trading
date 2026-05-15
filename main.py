@@ -20,6 +20,7 @@ from strategy.fib_strategy import generate_fib_levels
 
 from core.engine import Engine
 from core.recovery import sync_engine
+from core.stock_screen_intra import run_screener
 
 from utils.logger import log, error_log
 from utils.state_logger import log_state
@@ -91,10 +92,10 @@ def initialize_system():
 
         eq_engine = Engine(fyers, eq_symbol, eq_levels)
 
-        try:
-            log_state(eq_engine.state,"MAIN INITIAL STATE")
-        except Exception as e:
-            error_log(f"MAIN INITIAL STATE LOGGING FAILED: {e}")
+        # try:
+        #     log_state(eq_engine.state,"MAIN INITIAL STATE")
+        # except Exception as e:
+        #     error_log(f"MAIN INITIAL STATE LOGGING FAILED: {e}")
 
         return fyers, [eq_engine], [eq_symbol]
 
@@ -125,11 +126,11 @@ def initialize_system():
         call_engine = Engine(fyers, call_symbol, call_levels)
         put_engine = Engine(fyers, put_symbol, put_levels)
 
-        try:
-            log_state(call_engine.state, "MAIN CALL INITIAL STATE")
-            log_state(put_engine.state, "MAIN PUT INITIAL STATE")
-        except Exception as e:
-            error_log(f"INITIAL STATE LOGGING FAILED: {e}")
+        # try:
+        #     log_state(call_engine.state, "MAIN CALL INITIAL STATE")
+        #     log_state(put_engine.state, "MAIN PUT INITIAL STATE")
+        # except Exception as e:
+        #     error_log(f"INITIAL STATE LOGGING FAILED: {e}")
 
         return fyers, [call_engine, put_engine], [call_symbol, put_symbol]
 
@@ -146,7 +147,6 @@ def run():
         # ----------------------------------
         if not is_market_open():
             log("MARKET IS CLOSED. CANNOT INITIATE ALGO SYSTEM.")
-            return
 
     except Exception as e:
         error_log(f"{e}")
@@ -231,6 +231,10 @@ def run():
                         if engine.state.active_trade:
                             res = engine.force_exit()
                             log(f"EOD EXIT FOR {engine.symbol} : {res.get("message")}")
+
+                        if engine.state.entry_order_id:
+                            res = engine.exit_trade()
+                            log(f"EOD PENDING ORDER CANCELLED FOR {engine.symbol} : {res.get("message")}")
                     except Exception as e:
                         log(f"EOD EXIT ERROR: {e}")
                 log("EOD EXIT COMPLETED")
@@ -280,6 +284,15 @@ def run():
         args=(order_token, engine_router, resync_all),
         daemon=True
     ).start()
+
+    # --------------------------------------
+    # START SCREENER (THREAD)
+    # --------------------------------------
+    # threading.Thread(
+    #     target=run_screener,
+    #     args=(fyers.token,),
+    #     daemon=True
+    # ).start()
 
     # --------------------------------------
     # KEEP MAIN ALIVE

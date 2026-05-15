@@ -44,7 +44,7 @@ UNDERLYING = "BSE:SENSEX-INDEX"
 # ==========================================
 MARKET_START = time(9, 15)
 MARKET_END = time(15, 30)
-EOD_EXIT_TIME = time(15, 20)
+EOD_EXIT_TIME = time(15, 12)
 
 
 # ==========================================

@@ -50,14 +50,13 @@ def start_order_ws(access_token, engine_router, on_reconnect):
         log(f"TRADE WEB SOCKET RAW MESSAGE:{msg}")
         try:
             log(f"TRADE -> {msg.get('trades').get('symbol')} | status={msg.get('s')}")
-            order = msg.get("trades", {})
+            trade = msg.get("trades", {})
 
             # Route to engine
-            if not order:
+            if not trade:
                 return
 
-            # engine_router("TRADE", order)
-            engine_router("TRADE", msg)
+            engine_router("TRADE", trade)
 
         except Exception as e:
             error_log(f"TRADE WS ERROR: {e}")
@@ -91,8 +90,8 @@ def start_order_ws(access_token, engine_router, on_reconnect):
     # --------------------------------------
     # GENERAL EVENTS (OPTIONAL)
     # --------------------------------------
-    def on_general(msg):
-        log(f"GENERAL UPDATE MESSAGE -> {msg}")
+    # def on_general(msg):
+    #     log(f"GENERAL UPDATE MESSAGE -> {msg}")
 
     # --------------------------------------
     # CONNECT CALLBACK
@@ -135,9 +134,9 @@ def start_order_ws(access_token, engine_router, on_reconnect):
         on_connect=on_connect,
         on_close=on_close,
         on_error=on_error,
-        on_general=on_general,
+        # on_general=on_general,
         on_orders=on_order,
-        on_positions=on_position,
+        # on_positions=on_position,
         on_trades=on_trade,
         reconnect=True,
         reconnect_retry=10

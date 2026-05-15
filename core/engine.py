@@ -12,6 +12,8 @@ from core.events import (
     calculate_trailing_sl
 )
 
+from core.risk_management import get_trade_risk_profile
+
 from strategy.fib_strategy import calculate_sl
 from config.trading_params import SL_POINTS, TRAILING_RULES
 # from utils.symbol_master import get_tick_size
@@ -109,9 +111,28 @@ class Engine:
 
 
         # ----------------------------------
-        # TRAILING SL
+        # TRAILING SL AND PLACING SL ORDER IF NO SL ORDER PRESENT
         # ----------------------------------
         if state.active_trade:
+            if not state.sl_order_id:
+                # Place SL
+                sl_price = calculate_sl(state.entry_price)
+                sl_res = place_sl_order(self.fyers, self.symbol, self.state.qty, sl_price)
+                log(f"LATE SL ORDER RESPONSE : {sl_res}")
+                if sl_res.get('s') == 'ok':
+                    self.state.sl_order_id = sl_res.get("id")
+                    self.state.sl_price = sl_price
+                    state.first_trade_done = True
+                    log(f"{self.symbol} LATE SL PLACED @ {sl_price}")
+                    try:
+                        log_state(self.state, "ENGINE - LATE SL ORDER EVENT")
+                    except Exception as e:
+                        error_log(f"ENGINE - LATE SL ORDER EVENT LOGGING FAILED: {e}")
+                elif sl_res.get('s') == 'error':
+                    log(f"LATE SL ORDER COULD NOT BE PLACED: {sl_res}")
+                else:
+                    error_log(f"LATE SL ORDER PLACEMENT ERROR: {sl_res}")
+
             new_sl = calculate_trailing_sl(
                 state.entry_price,
                 price,
@@ -228,11 +249,11 @@ class Engine:
         log(f"{self.symbol} HANDLE TRADE EVENT: {msg}")
 
         try:
-            if msg.get('trades').get("symbol") != self.symbol:
+            if msg.get("symbol") != self.symbol:
                 log("HANDLE TRADE UPDATE - SYMBOL MISMATCH")
                 return
 
-            filled_qty = msg.get('trades').get("tradedQty", 0)
+            filled_qty = msg.get("tradedQty", 0)
             status = msg.get("s")
 
             # Partial fill (status != 2)
@@ -245,20 +266,20 @@ class Engine:
                 return
 
             # fill_price = float(msg.get("avgPrice", 0))
-            fill_price = float(msg.get('trades').get("tradePrice") or 0)
-            filled_qty = msg.get('trades').get("tradedQty", 0)
+            fill_price = float(msg.get("tradePrice") or 0)
+            filled_qty = msg.get("tradedQty", 0)
 
             if fill_price == 0 or filled_qty == 0:
                 log(f"{self.symbol} INVALID TRADE DATA -> {msg}")
                 return
 
             log(f"{self.symbol} TRADE FILLED @ {fill_price} FOR QTY: {filled_qty}")
-            fill_side = "BUY" if msg.get('trades').get("side") == 1 else "SELL" if msg.get('trades').get("side") == -1 else "ERROR"
+            fill_side = "BUY" if msg.get("side") == 1 else "SELL" if msg.get("side") == -1 else "ERROR"
             if fill_side != "ERROR":
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S:%f")
                 trade_log(f"[TRADE] {timestamp} | {self.symbol}, SIDE:{fill_side}, TRADED PRICE:{fill_price}, QTY:{filled_qty}")
 
-            if msg.get('trades').get('side') == 1:
+            if msg.get('side') == 1:
 
                 # duplicate protection
                 if self.state.active_trade:
@@ -286,7 +307,7 @@ class Engine:
                 else:
                     error_log(f"SL ORDER PLACEMENT ERROR: {sl_res}")
 
-            if msg.get('trades').get('side') == -1:
+            if msg.get('side') == -1:
                 log(f"{self.symbol} TRADE EXITED @ {fill_price} FOR QTY: {filled_qty}")
                 self.state.reset_trade()
                 try:
@@ -325,9 +346,15 @@ class Engine:
             # ----------------------------------
             elif status == 1:
 
-                log(f"{self.symbol} ORDER CANCELLED")
-                self.state.entry_order_id = None
-                log_state(self.state, "ORDER_CANCELLED")
+                if msg.get("side") == 1: # cancels buy orders
+                    log(f"{self.symbol} BUY ORDER CANCELLED")
+                    self.state.entry_order_id = None
+                    log_state(self.state, "BUY_ORDER_CANCELLED")
+
+                if msg.get("side") == -1: # cancels sell orders
+                    log(f"{self.symbol} SL ORDER CANCELLED")
+                    self.state.sl_order_id = None
+                    log_state(self.state, "SL_ORDER_CANCELLED")
 
             # ----------------------------------
             # OPEN / TRIGGER PENDING
@@ -371,22 +398,6 @@ class Engine:
 
                 return
 
-            # # ----------------------------------
-            # # POSITION EXISTS
-            # # ----------------------------------
-            # entry_price = float(msg.get("avgPrice", 0))
-            #
-            # if entry_price == 0:
-            #     return
-            #
-            # # If engine missed trade (reconnect case)
-            # if not self.state.active_trade:
-            #     log(f"{self.symbol} POSITION RECOVERED FROM WS @ {entry_price}")
-            #
-            #     sl_price = calculate_sl(entry_price)
-            #
-            #     self.state.set_active_trade(entry_price, sl_price, abs(qty))
-
         except Exception as e:
             error_log(f"{self.symbol} HANDLE POSITION UPDATE ERROR: {e}")
 
@@ -399,8 +410,12 @@ class Engine:
         try:
             # Cancel SL first
             if self.state.sl_order_id:
-                cancel_order(self.fyers, self.state.sl_order_id)
+                res = cancel_order(self.fyers, self.state.sl_order_id)
+                log(f"{self.symbol} PENDING SL ORDER CANCELLED. | {res}")
 
+            if self.state.entry_order_id:
+                res = cancel_order(self.fyers, self.state.entry_order_id)
+                log(f"{self.symbol} PENDING ENTRY ORDER CANCELLED | {res}")
             # Clean exit via orders layer
             log(f"{self.symbol} EXIT INITIATED")
             res = close_position(self.fyers, self.symbol)
@@ -437,6 +452,21 @@ class Engine:
         log(f"{self.symbol} FORCED EXIT EVENT")
 
         if self.state.active_trade:
+            res = self.exit_trade()
+            if res.get("s") == "ok":
+                log(f"FORCED EXIT SUCCESSFUL: {res}")
+                log(f"{self.symbol} FORCED EXIT ORDER: {res}")
+                self.state.reset_trade()
+                try:
+                    log_state(self.state, "ENGINE - FORCED EXIT STATE")
+                except Exception as e:
+                    error_log(f"ENGINE - FORCED EXIT STATE LOGGING FAILED: {e}")
+                return res
+            elif res.get("s") == "error":
+                error_log(f"FORCED EXIT ERROR: {res}")
+                return res
+
+        if self.state.entry_order_id:
             res = self.exit_trade()
             if res.get("s") == "ok":
                 log(f"FORCED EXIT SUCCESSFUL: {res}")

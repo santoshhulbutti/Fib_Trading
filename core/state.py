@@ -18,11 +18,13 @@ class TradeState:
         self.active_trade = False
         self.entry_price = None
         self.sl_price = None
+        self.entry_level_index = None
 
         # --------------------------------------
         # ORDER TRACKING
         # --------------------------------------
         self.entry_order_id = None   # Pending entry order
+        self.pending_qty = 0
         self.sl_order_id = None      # SL order after fill
         self.qty = 0
 
@@ -47,11 +49,13 @@ class TradeState:
         self.entry_order_id = None
         self.sl_order_id = None
         self.qty = 0
+        self.pending_qty = 0
+        self.entry_level_index = None
 
     # --------------------------------------
     # SET ACTIVE TRADE (AFTER FILL)
     # --------------------------------------
-    def set_active_trade(self, entry_price, sl_price, qty=1):
+    def set_active_trade(self, entry_price, sl_price, qty):
         self.active_trade = True
         self.entry_price = entry_price
         self.sl_price = sl_price

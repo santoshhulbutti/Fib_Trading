@@ -173,6 +173,34 @@ def modify_order(fyers, order_id, price, trigger, qty):
 
 
 # ------------------------------------------
+# MODIFY ENTRY ORDER
+# ------------------------------------------
+def modify_entry_order(fyers, order_id, price, trigger, qty):
+
+    try:
+        data = {
+            "id": order_id,
+            "type": 4,
+            "limitPrice": price,
+            "stopPrice": trigger,
+            "qty": qty  # unchanged
+        }
+
+        res = fyers.modify_order(data)
+        if res.get("s") =="ok":
+            log(f"MODIFY ENTRY ORDER: {res}")
+            return res
+        elif res.get("s") =="error":
+            error_log(f"MODIFY ENTRY ORDER ERROR: {res}")
+            return res
+
+
+    except Exception as e:
+        error_log(f"MODIFY ENTRY ORDER ERROR: {e}")
+        return {}
+
+
+# ------------------------------------------
 # GET POSITIONS
 # ------------------------------------------
 def get_positions(fyers):

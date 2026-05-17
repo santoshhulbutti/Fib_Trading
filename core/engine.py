@@ -25,6 +25,7 @@ from broker.orders import (
     cancel_order,
     place_sl_order,
     modify_order,
+    modify_entry_order,
     close_position
 )
 
@@ -72,11 +73,6 @@ class Engine:
             except Exception as e:
                 error_log(f"ENGINE - FIB RANGE CHANGE LOGGING FAILED: {e}")
         state.curr_index = idx
-
-        # try:
-        #     log_state(state, "ENGINE - LEVEL DETECT STATE")
-        # except Exception as e:
-        #     error_log(f"ENGINE - LEVEL DETECT STATE LOGGING FAILED: {e}")
 
         lower = self.levels[idx]
         upper = self.levels[idx + 1]
@@ -184,6 +180,7 @@ class Engine:
                     res = place_stop_buy(self.fyers, self.symbol, 1, upper)
                     if res.get('s')=='ok':
                         state.entry_order_id = res.get("id")
+                        state.entry_level_index = idx
                         log(f"{self.symbol} FIRST LONG ORDER PLACED @ {upper}")
                         try:
                             log_state(state, "ENGINE - FIRST TRADE STATE")
@@ -215,6 +212,7 @@ class Engine:
                     res = place_stop_buy(self.fyers, self.symbol, 1, upper)
                     if res.get('s') == 'ok':
                         state.entry_order_id = res.get("id")
+                        state.entry_level_index = idx
                         log(f"{self.symbol} BREAKOUT ORDER PLACED @ {upper}")
                         try:
                             log_state(state, "ENGINE - BREAKOUT ORDER STATE")
@@ -231,6 +229,23 @@ class Engine:
                 #     state.entry_order_id = res.get("id")
                 #
                 #     log(f"{self.symbol} BREAKDOWN ORDER @ {lower}")
+
+        # ----------------------------------
+        # ENTRY SHIFT LOGIC FOR PENDING ORDER WHEN RANGE SHIFTS WITHOUT EXECUTING ORDER
+        # ----------------------------------
+        if not state.active_trade and state.entry_order_id:
+            if idx < state.entry_level_index:
+                trigger = upper - SL_POINTS
+                if trigger_hit(price, trigger):
+                    log(f"{self.symbol} PRICE DROPPED TO RANGE {idx} | MODIFYING PENDING ORDER")
+                    mod_res = modify_entry_order(self.fyers, state.entry_order_id, trigger+0.1, trigger, self.state.pending_qty)
+                    if mod_res.get('s') == 'ok':
+                        state.entry_level_index = idx  # Update recorded index to new range
+                        log(f"{self.symbol} SUCCESS: ORDER MODIFIED TO {upper}")
+                    else:
+                        error_log(f"{self.symbol} MODIFICATION FAILED: {mod_res}")
+
+
 
         # ----------------------------------
         # UPDATE PREVIOUS PRICE
@@ -291,6 +306,8 @@ class Engine:
                 self.state.set_active_trade(fill_price, sl_price, filled_qty)
                 self.state.entry_order_id = None
                 self.state.first_trade_done = True
+                self.state.pending_qty = 0
+                self.state.entry_level_index = None
 
                 # Place SL immediately
                 sl_res = place_sl_order(self.fyers, self.symbol, filled_qty, sl_price)
@@ -362,6 +379,7 @@ class Engine:
             elif status in [4, 6]:
 
                 log(f"{self.symbol} ORDER IN TRANSIT OR PENDING: Status={status}")
+                self.state.pending_qty = msg.get("remainingQuantity", 0)
 
         except Exception as e:
 

@@ -4,7 +4,7 @@
 
 from fyers_apiv3 import fyersModel
 
-import os
+import os, sys
 import pandas as pd
 
 
@@ -237,7 +237,11 @@ def run():
                             log(f"EOD PENDING ORDER CANCELLED FOR {engine.symbol} : {res.get("message")}")
                     except Exception as e:
                         log(f"EOD EXIT ERROR: {e}")
+                        log("SYSTEM CLOSING WITH OPEN POSITIONS/PENDING ORDERS. MANUAL INTERVENTION MAY BE REQUIRED.")
+                        sys.exit(1)
                 log("EOD EXIT COMPLETED")
+                log("SYSTEM CLOSING FOR THE DAY...")
+                sys.exit(0)
 
 
         except Exception as ex:

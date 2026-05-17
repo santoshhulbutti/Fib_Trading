@@ -54,9 +54,10 @@ def start_order_ws(access_token, engine_router, on_reconnect):
 
             # Route to engine
             if not trade:
+                log(f"Empty on-trade Message:{msg}")
                 return
 
-            engine_router("TRADE", trade)
+            engine_router("TRADE", msg.get("trades"))
 
         except Exception as e:
             error_log(f"TRADE WS ERROR: {e}")

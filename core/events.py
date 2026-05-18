@@ -49,7 +49,7 @@ def detect_cross(prev_price, curr_price, level):
 #     return trigger_price - tick_size < price < trigger_price + tick_size
 
 def trigger_hit(price, trigger_price):
-    return trigger_price-0.1 < price < trigger_price+0.1
+    return trigger_price-0.15 < price < trigger_price+0.15
 
 # def trigger_hit(price, trigger_price):
 #     return price >= trigger_price

@@ -436,15 +436,17 @@ class Engine:
                 log(f"{self.symbol} PENDING ENTRY ORDER CANCELLED | {res}")
             # Clean exit via orders layer
             log(f"{self.symbol} EXIT INITIATED")
-            res = close_position(self.fyers, self.symbol)
 
-            if res.get("s") == "ok":
-                log(f"EXIT ORDER SUBMIT SUCCESSFULLY: {res}")
-                log(f"{self.symbol} EXIT ORDER: {res}")
-                return res
-            elif res.get("s") == "error":
-                error_log(f"EXIT ORDER SUBMIT ERROR: {res}")
-                return res
+            if self.state.active_trade:
+
+                res = close_position(self.fyers, self.symbol)
+                if res.get("s") == "ok":
+                    log(f"EXIT ORDER SUBMIT SUCCESSFULLY: {res}")
+                    log(f"{self.symbol} EXIT ORDER: {res}")
+                    return res
+                elif res.get("s") == "error":
+                    error_log(f"EXIT ORDER SUBMIT ERROR: {res}")
+                    return res
 
             # positions = get_positions(self.fyers)
             #

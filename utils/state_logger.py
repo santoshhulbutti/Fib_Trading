@@ -61,6 +61,8 @@ def _state_to_dict(state):
 
         "prev_price": state.prev_price,
         "curr_index": state.curr_index,
+        "pending_qty": state.pending_qty,
+        "entry_level_index": state.entry_level_index,
     }
 
 

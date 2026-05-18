@@ -42,7 +42,7 @@ UNDERLYING = "BSE:SENSEX-INDEX"
 # ==========================================
 # TIME SETTINGS (USE datetime.time)
 # ==========================================
-MARKET_START = time(9, 15)
+MARKET_START = time(9, 10)
 MARKET_END = time(15, 30)
 EOD_EXIT_TIME = time(15, 12)
 

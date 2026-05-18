@@ -147,6 +147,7 @@ def run():
         # ----------------------------------
         if not is_market_open():
             log("MARKET IS CLOSED. CANNOT INITIATE ALGO SYSTEM.")
+            return
 
     except Exception as e:
         error_log(f"{e}")
